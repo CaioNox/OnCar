@@ -1,0 +1,74 @@
+# ---------------------------------------------------------------------------
+# Segurança - segredos e credenciais (NUNCA versionar)
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.sample
+*.local
+
+# Chaves e certificados
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.ppk
+
+# Credenciais de cloud / serviços
+**/credentials
+**/credentials.json
+*-service-account*.json
+serviceAccountKey.json
+.aws/
+.gcloud/
+secrets.*
+*.secret
+*.secrets
+
+# Tokens / configs sensíveis de ferramentas
+.npmrc
+.netrc
+.mcp.json
+auth.json
+
+# ---------------------------------------------------------------------------
+# Build / dependências
+# ---------------------------------------------------------------------------
+target/
+build/
+dist/
+out/
+node_modules/
+.next/
+*.class
+*.jar
+*.war
+
+# ---------------------------------------------------------------------------
+# Logs e temporários
+# ---------------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tmp
+*.bak
+*.swp
+
+# ---------------------------------------------------------------------------
+# IDE / SO
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
