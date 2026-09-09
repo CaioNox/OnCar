@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Cadastro de usuario</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3" th:text="${usuarioForm.novo} ? 'Novo usuario' : 'Editar usuario'">Novo usuario</h1>
+
+    <form class="card card-body" method="post" th:action="@{/usuarios/salvar}" th:object="${usuarioForm}">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="nome">Nome</label>
+                <input class="form-control" id="nome" th:field="*{nome}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="email">E-mail</label>
+                <input class="form-control" type="email" id="email" th:field="*{email}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="perfil">Perfil de acesso</label>
+                <select class="form-select" id="perfil" th:field="*{perfil}">
+                    <option value="">Selecione</option>
+                    <option th:each="item : ${perfis}" th:value="${item}" th:text="${item.descricao}"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}"></div>
+            </div>
+            <div class="col-md-6" th:if="${usuarioForm.novo}">
+                <label class="form-label" for="senha">Senha inicial</label>
+                <input class="form-control" type="password" id="senha" th:field="*{senha}" minlength="8">
+                <div class="form-text">Minimo de 8 caracteres, com ao menos uma letra e um numero (RN014).</div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" th:href="@{/usuarios}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

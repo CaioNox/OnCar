@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Lista de reposicao</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <h1 class="h4 mb-3">Lista de reposicao</h1>
+    <p class="text-muted">Produtos cujo saldo esta igual ou abaixo do estoque minimo definido no cadastro (RN005).</p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white">
+            <thead class="table-light">
+            <tr>
+                <th>SKU</th>
+                <th>Descricao</th>
+                <th>Fornecedor principal</th>
+                <th class="text-end">Saldo</th>
+                <th class="text-end">Estoque minimo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="produto : ${produtos}" class="table-warning">
+                <td th:text="${produto.sku}"></td>
+                <td th:text="${produto.descricao}"></td>
+                <td th:text="${produto.fornecedorPadrao != null} ? ${produto.fornecedorPadrao.razaoSocial} : '-'"></td>
+                <td class="text-end" th:text="${produto.saldo}"></td>
+                <td class="text-end" th:text="${produto.estoqueMinimo}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(produtos)}">
+                <td colspan="5" class="text-center text-muted">Nenhum item precisa de reposicao.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-outline-secondary" th:href="@{/}">Voltar</a>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

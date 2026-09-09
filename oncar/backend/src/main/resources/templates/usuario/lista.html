@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Usuarios</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Usuarios</h1>
+        <a class="btn btn-primary" th:href="@{/usuarios/novo}">Novo usuario</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Perfil</th>
+                <th>Situacao</th>
+                <th>Redefinir senha</th>
+                <th>Acoes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usuario : ${usuarios}">
+                <td th:text="${usuario.nome}"></td>
+                <td th:text="${usuario.email}"></td>
+                <td th:text="${usuario.perfil.descricao}"></td>
+                <td>
+                    <span class="badge bg-success" th:if="${usuario.ativo}">Ativo</span>
+                    <span class="badge bg-secondary" th:unless="${usuario.ativo}">Inativo</span>
+                    <span class="badge bg-danger" th:if="${usuario.bloqueado}">Bloqueado</span>
+                </td>
+                <td>
+                    <form class="d-flex gap-1" method="post"
+                          th:action="@{/usuarios/{id}/redefinir-senha(id=${usuario.id})}">
+                        <input class="form-control form-control-sm" type="password" name="novaSenha"
+                               required minlength="8" placeholder="Nova senha">
+                        <button class="btn btn-sm btn-outline-secondary" type="submit">Aplicar</button>
+                    </form>
+                </td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary"
+                       th:href="@{/usuarios/{id}/editar(id=${usuario.id})}">Editar</a>
+                    <form class="d-inline" method="post" th:if="${usuario.ativo}"
+                          th:action="@{/usuarios/{id}/inativar(id=${usuario.id})}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Inativar</button>
+                    </form>
+                    <form class="d-inline" method="post" th:unless="${usuario.ativo}"
+                          th:action="@{/usuarios/{id}/reativar(id=${usuario.id})}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Reativar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">A senha deve conter no minimo 8 caracteres, com ao menos uma letra e um numero,
+        e nao pode repetir as tres ultimas utilizadas (RN014).</p>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

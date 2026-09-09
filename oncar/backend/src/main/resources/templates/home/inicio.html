@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Inicio</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Produtos ativos</p>
+                    <p class="h3 mb-0" th:text="${totalProdutosAtivos}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Itens abaixo do minimo</p>
+                    <p class="h3 mb-0" th:text="${#lists.size(produtosAbaixoDoMinimo)}">0</p>
+                </div>
+            </div>
+        </div>
+        <!-- RN007: dados de custo ficam restritos aos perfis com acesso financeiro -->
+        <div class="col-md-4" sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Valor total em estoque</p>
+                    <p class="h3 mb-0"
+                       th:text="'R$ ' + ${#numbers.formatDecimal(valorTotalEmEstoque, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RF12 e RN005: lista de reposicao -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Lista de reposicao (saldo igual ou abaixo do minimo)</span>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/produtos/reposicao}">Ver tudo</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Descricao</th>
+                    <th class="text-end">Saldo</th>
+                    <th class="text-end">Minimo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="produto : ${produtosAbaixoDoMinimo}" class="table-warning">
+                    <td th:text="${produto.sku}"></td>
+                    <td><a th:href="@{/produtos/{id}/extrato(id=${produto.id})}" th:text="${produto.descricao}"></a></td>
+                    <td class="text-end" th:text="${produto.saldo}"></td>
+                    <td class="text-end" th:text="${produto.estoqueMinimo}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(produtosAbaixoDoMinimo)}">
+                    <td colspan="4" class="text-center text-muted">Nenhum item precisa de reposicao.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card mb-5">
+        <div class="card-header">Ultimas movimentacoes</div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Tipo</th>
+                    <th class="text-end">Quantidade</th>
+                    <th class="text-end">Saldo</th>
+                    <th>Usuario</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="movimentacao : ${ultimasMovimentacoes}">
+                    <td th:text="${#temporals.format(movimentacao.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${movimentacao.produto.descricao}"></td>
+                    <td th:text="${movimentacao.tipo.descricao}"></td>
+                    <td class="text-end" th:text="${movimentacao.quantidade}"></td>
+                    <td class="text-end" th:text="${movimentacao.saldoResultante}"></td>
+                    <td th:text="${movimentacao.usuario.nome}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(ultimasMovimentacoes)}">
+                    <td colspan="6" class="text-center text-muted">Nenhuma movimentacao registrada.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

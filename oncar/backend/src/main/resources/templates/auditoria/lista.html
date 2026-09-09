@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Auditoria</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <h1 class="h4 mb-3">Log de auditoria</h1>
+    <p class="text-muted small">Ultimos 200 registros de inclusao, alteracao, exclusao e acesso (RF20).</p>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered bg-white">
+            <thead class="table-light">
+            <tr>
+                <th>Data e hora</th>
+                <th>Usuario</th>
+                <th>Acao</th>
+                <th>Entidade</th>
+                <th>Registro</th>
+                <th>Detalhe</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="registro : ${registros}">
+                <td th:text="${#temporals.format(registro.dataHora, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                <td th:text="${registro.usuario}"></td>
+                <td th:text="${registro.acao.descricao}"></td>
+                <td th:text="${registro.entidade}"></td>
+                <td th:text="${registro.registroId}"></td>
+                <td th:text="${registro.detalhe}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(registros)}">
+                <td colspan="6" class="text-center text-muted">Nenhum registro de auditoria.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

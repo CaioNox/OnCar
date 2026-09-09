@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Ajuste de inventario</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3">Ajuste de inventario</h1>
+    <p class="text-muted small">Unica operacao que altera o saldo sem compra ou venda correspondente.
+        Exige o saldo apurado na contagem e uma justificativa com no minimo dez caracteres (RN006).</p>
+
+    <form class="card card-body" method="post" th:action="@{/movimentacoes/ajuste}" th:object="${ajusteForm}">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="produtoId">Produto</label>
+                <select class="form-select" id="produtoId" th:field="*{produtoId}">
+                    <option value="">Selecione</option>
+                    <option th:each="produto : ${produtos}" th:value="${produto.id}"
+                            th:text="${produto.sku} + ' - ' + ${produto.descricao}
+                                     + ' (saldo ' + ${produto.saldo} + ')'"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('produtoId')}" th:errors="*{produtoId}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="saldoApurado">Saldo apurado na contagem</label>
+                <input class="form-control" type="number" step="0.001" id="saldoApurado" th:field="*{saldoApurado}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('saldoApurado')}"
+                     th:errors="*{saldoApurado}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="competencia">Data de competencia</label>
+                <input class="form-control" type="date" id="competencia" th:field="*{competencia}">
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="justificativa">Justificativa</label>
+                <textarea class="form-control" id="justificativa" rows="3" th:field="*{justificativa}"
+                          placeholder="Descreva o motivo da divergencia apurada na contagem"></textarea>
+                <div class="text-danger small" th:if="${#fields.hasErrors('justificativa')}"
+                     th:errors="*{justificativa}"></div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-warning" type="submit">Registrar ajuste</button>
+            <a class="btn btn-outline-secondary" th:href="@{/movimentacoes}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

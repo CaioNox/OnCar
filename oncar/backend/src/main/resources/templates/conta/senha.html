@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Alterar senha</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container" style="max-width: 560px;">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3">Alterar minha senha</h1>
+
+    <form class="card card-body" method="post" th:action="@{/conta/senha}" th:object="${alterarSenhaForm}">
+        <div class="mb-3">
+            <label class="form-label" for="senhaAtual">Senha atual</label>
+            <input class="form-control" type="password" id="senhaAtual" th:field="*{senhaAtual}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('senhaAtual')}" th:errors="*{senhaAtual}"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="novaSenha">Nova senha</label>
+            <input class="form-control" type="password" id="novaSenha" th:field="*{novaSenha}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('novaSenha')}" th:errors="*{novaSenha}"></div>
+            <div class="form-text">Minimo de 8 caracteres, com ao menos uma letra e um numero. Nao pode repetir
+                as tres ultimas senhas utilizadas (RN014).</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="confirmacao">Confirme a nova senha</label>
+            <input class="form-control" type="password" id="confirmacao" th:field="*{confirmacao}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('confirmacao')}" th:errors="*{confirmacao}"></div>
+        </div>
+        <div>
+            <button class="btn btn-success" type="submit">Alterar senha</button>
+            <a class="btn btn-outline-secondary" th:href="@{/}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

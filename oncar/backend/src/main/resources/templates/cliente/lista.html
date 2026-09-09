@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Clientes</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Clientes</h1>
+        <a class="btn btn-primary" th:href="@{/clientes/novo}">Novo cliente</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Nome</th>
+                <th>Documento</th>
+                <th>Telefone</th>
+                <th>Veiculos</th>
+                <th>Situacao</th>
+                <th>Acoes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cliente : ${clientes}">
+                <td th:text="${cliente.nome}"></td>
+                <td th:text="${cliente.documento}"></td>
+                <td th:text="${cliente.telefone}"></td>
+                <td>
+                    <span th:each="veiculo, iter : ${cliente.veiculos}"
+                          th:text="${veiculo.placa} + (${veiculo.modelo} != null ? ' (' + ${veiculo.modelo} + ')' : '')
+                                   + (${iter.last} ? '' : ', ')"></span>
+                </td>
+                <td>
+                    <span class="badge bg-success" th:if="${cliente.ativo}">Ativo</span>
+                    <span class="badge bg-secondary" th:unless="${cliente.ativo}">Inativo</span>
+                </td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary"
+                       th:href="@{/clientes/{id}/editar(id=${cliente.id})}">Editar</a>
+                    <form class="d-inline" method="post" th:if="${cliente.ativo}"
+                          th:action="@{/clientes/{id}/inativar(id=${cliente.id})}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Inativar</button>
+                    </form>
+                    <form class="d-inline" method="post" th:unless="${cliente.ativo}"
+                          th:action="@{/clientes/{id}/reativar(id=${cliente.id})}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Reativar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(clientes)}">
+                <td colspan="6" class="text-center text-muted">Nenhum cliente cadastrado.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

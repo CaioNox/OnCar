@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Acesso</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body class="bg-light">
+<div class="container" style="max-width: 420px; margin-top: 80px;">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h4 mb-1 text-center">OnCar</h1>
+            <p class="text-center text-muted small">Gestao de estoque para oficinas</p>
+
+            <div class="alert alert-danger" th:if="${param.erro}">
+                E-mail ou senha invalidos. Confira os dados e tente novamente.
+            </div>
+            <div class="alert alert-danger" th:if="${param.bloqueada}">
+                Conta bloqueada por 15 minutos apos cinco tentativas malsucedidas. Aguarde para tentar de novo.
+            </div>
+            <div class="alert alert-warning" th:if="${param.expirada}">
+                Sua sessao expirou por inatividade. Entre novamente para continuar.
+            </div>
+            <div class="alert alert-success" th:if="${param.logout}">
+                Sessao encerrada com seguranca.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="email">E-mail</label>
+                    <input class="form-control" type="email" id="email" name="email" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="senha">Senha</label>
+                    <input class="form-control" type="password" id="senha" name="senha" required>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

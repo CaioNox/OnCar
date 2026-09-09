@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Produtos</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Produtos</h1>
+        <a class="btn btn-primary" th:href="@{/produtos/novo}"
+           sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Novo produto</a>
+    </div>
+
+    <!-- RF07: pesquisa por descricao, SKU, categoria, marca ou fornecedor -->
+    <form class="card card-body mb-3" method="get" th:action="@{/produtos}">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label" for="termo">Descricao, SKU ou marca</label>
+                <input class="form-control" id="termo" name="termo" th:value="${termo}"
+                       placeholder="Ex: filtro de oleo">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="categoria">Categoria</label>
+                <select class="form-select" id="categoria" name="categoria">
+                    <option value="">Todas</option>
+                    <option th:each="item : ${categorias}" th:value="${item}" th:text="${item.descricao}"
+                            th:selected="${item == categoriaSelecionada}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="fornecedorId">Fornecedor</label>
+                <select class="form-select" id="fornecedorId" name="fornecedorId">
+                    <option value="">Todos</option>
+                    <option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}"
+                            th:text="${fornecedor.razaoSocial}"
+                            th:selected="${fornecedor.id == fornecedorSelecionado}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="somenteAtivos" name="somenteAtivos"
+                           value="true" th:checked="${somenteAtivos}">
+                    <label class="form-check-label" for="somenteAtivos">Somente ativos</label>
+                </div>
+                <button class="btn btn-outline-primary w-100" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white">
+            <thead class="table-light">
+            <tr>
+                <th>SKU</th>
+                <th>Descricao</th>
+                <th>Categoria</th>
+                <th class="text-end">Saldo</th>
+                <th class="text-end">Minimo</th>
+                <th class="text-end" sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Custo medio</th>
+                <th class="text-end">Preco de venda</th>
+                <th>Situacao</th>
+                <th>Acoes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="produto : ${produtos}" th:classappend="${produto.abaixoDoMinimo} ? 'table-warning'">
+                <td th:text="${produto.sku}"></td>
+                <td th:text="${produto.descricao}"></td>
+                <td th:text="${produto.categoria.descricao}"></td>
+                <td class="text-end" th:text="${produto.saldo}"></td>
+                <td class="text-end" th:text="${produto.estoqueMinimo}"></td>
+                <td class="text-end" sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')"
+                    th:text="${#numbers.formatDecimal(produto.precoCusto, 1, 'POINT', 2, 'COMMA')}"></td>
+                <td class="text-end"
+                    th:text="${#numbers.formatDecimal(produto.precoVenda, 1, 'POINT', 2, 'COMMA')}"></td>
+                <td>
+                    <span class="badge bg-success" th:if="${produto.ativo}">Ativo</span>
+                    <span class="badge bg-secondary" th:unless="${produto.ativo}">Inativo</span>
+                </td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-secondary"
+                       th:href="@{/produtos/{id}/extrato(id=${produto.id})}">Extrato</a>
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{/produtos/{id}/editar(id=${produto.id})}"
+                       sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Editar</a>
+                    <form class="d-inline" method="post" th:if="${produto.ativo}"
+                          th:action="@{/produtos/{id}/inativar(id=${produto.id})}"
+                          sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Inativar</button>
+                    </form>
+                    <form class="d-inline" method="post" th:unless="${produto.ativo}"
+                          th:action="@{/produtos/{id}/reativar(id=${produto.id})}"
+                          sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Reativar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(produtos)}">
+                <td colspan="9" class="text-center text-muted">Nenhum produto encontrado.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

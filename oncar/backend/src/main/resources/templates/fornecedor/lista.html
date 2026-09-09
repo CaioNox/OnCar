@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Fornecedores</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Fornecedores</h1>
+        <a class="btn btn-primary" th:href="@{/fornecedores/novo}">Novo fornecedor</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Razao social</th>
+                <th>CNPJ</th>
+                <th>Contato</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th class="text-end">Prazo (dias)</th>
+                <th>Situacao</th>
+                <th>Acoes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="fornecedor : ${fornecedores}">
+                <td th:text="${fornecedor.razaoSocial}"></td>
+                <td th:text="${fornecedor.cnpj}"></td>
+                <td th:text="${fornecedor.contato}"></td>
+                <td th:text="${fornecedor.telefone}"></td>
+                <td th:text="${fornecedor.email}"></td>
+                <td class="text-end" th:text="${fornecedor.prazoMedioEntrega}"></td>
+                <td>
+                    <span class="badge bg-success" th:if="${fornecedor.ativo}">Ativo</span>
+                    <span class="badge bg-secondary" th:unless="${fornecedor.ativo}">Inativo</span>
+                </td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary"
+                       th:href="@{/fornecedores/{id}/editar(id=${fornecedor.id})}">Editar</a>
+                    <form class="d-inline" method="post" th:if="${fornecedor.ativo}"
+                          th:action="@{/fornecedores/{id}/inativar(id=${fornecedor.id})}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Inativar</button>
+                    </form>
+                    <form class="d-inline" method="post" th:unless="${fornecedor.ativo}"
+                          th:action="@{/fornecedores/{id}/reativar(id=${fornecedor.id})}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Reativar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(fornecedores)}">
+                <td colspan="8" class="text-center text-muted">Nenhum fornecedor cadastrado.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

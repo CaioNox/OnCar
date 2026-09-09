@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Extrato do produto</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4">Extrato de movimentacoes</h1>
+    <p class="text-muted" th:text="${produto.sku} + ' - ' + ${produto.descricao}
+       + ' | saldo atual: ' + ${produto.saldo} + ' ' + ${produto.unidadeMedida.sigla}"></p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white">
+            <thead class="table-light">
+            <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Motivo</th>
+                <th class="text-end">Quantidade</th>
+                <th class="text-end">Saldo resultante</th>
+                <th>Documento</th>
+                <th>Usuario</th>
+                <th>Justificativa</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="movimentacao : ${movimentacoes}"
+                th:classappend="${movimentacao.estornada} ? 'text-decoration-line-through text-muted'">
+                <td th:text="${#temporals.format(movimentacao.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${movimentacao.tipo.descricao}"></td>
+                <td th:text="${movimentacao.motivo.descricao}"></td>
+                <td class="text-end" th:text="${movimentacao.quantidade}"></td>
+                <td class="text-end" th:text="${movimentacao.saldoResultante}"></td>
+                <td th:text="${movimentacao.documento}"></td>
+                <td th:text="${movimentacao.usuario.nome}"></td>
+                <td th:text="${movimentacao.justificativa}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(movimentacoes)}">
+                <td colspan="8" class="text-center text-muted">Nenhuma movimentacao para este produto.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-outline-secondary" th:href="@{/produtos}">Voltar</a>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Cadastro de cliente</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3" th:text="${cliente.id} == null ? 'Novo cliente' : 'Editar cliente'">Novo</h1>
+
+    <form class="card card-body" method="post" th:action="@{/clientes/salvar}" th:object="${cliente}">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="nome">Nome</label>
+                <input class="form-control" id="nome" th:field="*{nome}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="documento">CPF ou CNPJ</label>
+                <input class="form-control" id="documento" th:field="*{documento}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('documento')}" th:errors="*{documento}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="telefone">Telefone</label>
+                <input class="form-control" id="telefone" th:field="*{telefone}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="contato">Contato</label>
+                <input class="form-control" id="contato" th:field="*{contato}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="email">E-mail</label>
+                <input class="form-control" type="email" id="email" th:field="*{email}">
+            </div>
+        </div>
+
+        <h2 class="h6 mt-4">Veiculos</h2>
+        <div class="row g-3" th:each="veiculo, iter : *{veiculos}">
+            <div class="col-md-3">
+                <label class="form-label" th:for="'placa' + ${iter.index}">Placa</label>
+                <input class="form-control" th:id="'placa' + ${iter.index}"
+                       th:field="*{veiculos[__${iter.index}__].placa}" placeholder="ABC1D23">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" th:for="'modelo' + ${iter.index}">Modelo</label>
+                <input class="form-control" th:id="'modelo' + ${iter.index}"
+                       th:field="*{veiculos[__${iter.index}__].modelo}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" th:for="'ano' + ${iter.index}">Ano</label>
+                <input class="form-control" type="number" th:id="'ano' + ${iter.index}"
+                       th:field="*{veiculos[__${iter.index}__].ano}">
+            </div>
+        </div>
+        <div class="form-text">Deixe a placa em branco nas linhas que nao forem utilizadas.</div>
+
+        <div class="mt-4">
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" th:href="@{/clientes}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

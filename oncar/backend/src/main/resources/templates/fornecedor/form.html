@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Cadastro de fornecedor</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3" th:text="${fornecedor.id} == null ? 'Novo fornecedor' : 'Editar fornecedor'">Novo</h1>
+
+    <form class="card card-body" method="post" th:action="@{/fornecedores/salvar}" th:object="${fornecedor}">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label" for="razaoSocial">Razao social</label>
+                <input class="form-control" id="razaoSocial" th:field="*{razaoSocial}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('razaoSocial')}"
+                     th:errors="*{razaoSocial}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="cnpj">CNPJ</label>
+                <input class="form-control" id="cnpj" th:field="*{cnpj}" placeholder="00.000.000/0000-00">
+                <div class="text-danger small" th:if="${#fields.hasErrors('cnpj')}" th:errors="*{cnpj}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="contato">Contato</label>
+                <input class="form-control" id="contato" th:field="*{contato}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="telefone">Telefone</label>
+                <input class="form-control" id="telefone" th:field="*{telefone}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="email">E-mail</label>
+                <input class="form-control" type="email" id="email" th:field="*{email}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="prazoMedioEntrega">Prazo medio de entrega (dias)</label>
+                <input class="form-control" type="number" id="prazoMedioEntrega" th:field="*{prazoMedioEntrega}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('prazoMedioEntrega')}"
+                     th:errors="*{prazoMedioEntrega}"></div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" th:href="@{/fornecedores}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

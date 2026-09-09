@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Saida de estoque</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3">Registrar saida de estoque</h1>
+    <p class="text-muted small">Nenhuma saida pode deixar o saldo negativo: se a quantidade exceder o disponivel,
+        a operacao e integralmente rejeitada (RN002).</p>
+
+    <form class="card card-body" method="post" th:action="@{/movimentacoes/saida}" th:object="${saidaForm}">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="produtoId">Produto</label>
+                <select class="form-select" id="produtoId" th:field="*{produtoId}">
+                    <option value="">Selecione</option>
+                    <option th:each="produto : ${produtos}" th:value="${produto.id}"
+                            th:text="${produto.sku} + ' - ' + ${produto.descricao}
+                                     + ' (saldo ' + ${produto.saldo} + ')'"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('produtoId')}" th:errors="*{produtoId}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="motivo">Motivo da saida</label>
+                <select class="form-select" id="motivo" th:field="*{motivo}">
+                    <option value="">Selecione</option>
+                    <option th:each="item : ${motivos}" th:value="${item}" th:text="${item.descricao}"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="quantidade">Quantidade</label>
+                <input class="form-control" type="number" step="0.001" id="quantidade" th:field="*{quantidade}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('quantidade')}" th:errors="*{quantidade}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="clienteId">Cliente (opcional)</label>
+                <select class="form-select" id="clienteId" th:field="*{clienteId}">
+                    <option value="">Nao informado</option>
+                    <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nome}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="documento">Documento</label>
+                <input class="form-control" id="documento" th:field="*{documento}" placeholder="Ex: OS 458">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="competencia">Data de competencia</label>
+                <input class="form-control" type="date" id="competencia" th:field="*{competencia}">
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-primary" type="submit">Registrar saida</button>
+            <a class="btn btn-outline-secondary" th:href="@{/movimentacoes}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

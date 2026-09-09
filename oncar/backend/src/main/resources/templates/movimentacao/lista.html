@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Movimentacoes</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Movimentacoes de estoque</h1>
+        <div>
+            <a class="btn btn-success" th:href="@{/movimentacoes/entrada}"
+               sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Registrar entrada</a>
+            <a class="btn btn-primary" th:href="@{/movimentacoes/saida}"
+               sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE','ATENDENTE')">Registrar saida</a>
+            <a class="btn btn-outline-secondary" th:href="@{/movimentacoes/ajuste}"
+               sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Ajuste de inventario</a>
+        </div>
+    </div>
+
+    <p class="text-muted small">Movimentacoes confirmadas nao podem ser editadas nem excluidas (RN008).
+        Para corrigir um lancamento, registre um estorno.</p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>Tipo</th>
+                <th>Motivo</th>
+                <th class="text-end">Quantidade</th>
+                <th class="text-end">Saldo</th>
+                <th>Documento</th>
+                <th>Usuario</th>
+                <th sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">Estorno</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="movimentacao : ${movimentacoes}">
+                <td th:text="${#temporals.format(movimentacao.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${movimentacao.produto.sku} + ' - ' + ${movimentacao.produto.descricao}"></td>
+                <td th:text="${movimentacao.tipo.descricao}"></td>
+                <td th:text="${movimentacao.motivo.descricao}"></td>
+                <td class="text-end" th:text="${movimentacao.quantidade}"></td>
+                <td class="text-end" th:text="${movimentacao.saldoResultante}"></td>
+                <td th:text="${movimentacao.documento}"></td>
+                <td th:text="${movimentacao.usuario.nome}"></td>
+                <td sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">
+                    <span class="badge bg-secondary" th:if="${movimentacao.estornada}">Estornada</span>
+                    <span class="badge bg-info text-dark"
+                          th:if="${movimentacao.tipo.name() == 'ESTORNO'}">Estorno</span>
+                    <form class="d-flex gap-1" method="post"
+                          th:if="${!movimentacao.estornada and movimentacao.tipo.name() != 'ESTORNO'}"
+                          th:action="@{/movimentacoes/{id}/estorno(id=${movimentacao.id})}">
+                        <input class="form-control form-control-sm" name="justificativa" required
+                               minlength="10" placeholder="Justificativa (min. 10 caracteres)">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Estornar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(movimentacoes)}">
+                <td colspan="9" class="text-center text-muted">Nenhuma movimentacao registrada.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

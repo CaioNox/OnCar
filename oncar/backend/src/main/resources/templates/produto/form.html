@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Cadastro de produto</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3" th:text="${produto.id} == null ? 'Novo produto' : 'Editar produto'">Novo produto</h1>
+
+    <form class="card card-body" method="post" th:action="@{/produtos/salvar}" th:object="${produto}">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label" for="sku">SKU</label>
+                <input class="form-control" id="sku" th:field="*{sku}" placeholder="Ex: FL-1023">
+                <div class="text-danger small" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="descricao">Descricao</label>
+                <input class="form-control" id="descricao" th:field="*{descricao}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="marca">Marca</label>
+                <input class="form-control" id="marca" th:field="*{marca}">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label" for="categoria">Categoria</label>
+                <select class="form-select" id="categoria" th:field="*{categoria}">
+                    <option th:each="item : ${categorias}" th:value="${item}" th:text="${item.descricao}"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="unidadeMedida">Unidade de medida</label>
+                <select class="form-select" id="unidadeMedida" th:field="*{unidadeMedida}">
+                    <option th:each="item : ${unidades}" th:value="${item}" th:text="${item.sigla}"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('unidadeMedida')}"
+                     th:errors="*{unidadeMedida}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="aplicacao">Aplicacao</label>
+                <input class="form-control" id="aplicacao" th:field="*{aplicacao}"
+                       placeholder="Ex: Gol G5 1.0 2010-2016">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label" for="precoVenda">Preco de venda (R$)</label>
+                <input class="form-control" type="number" step="0.01" id="precoVenda" th:field="*{precoVenda}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Custo medio ponderado (R$)</label>
+                <input class="form-control" type="text" th:value="*{precoCusto}" readonly>
+                <div class="form-text">Calculado automaticamente a cada entrada (RN004).</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="estoqueMinimo">Estoque minimo</label>
+                <input class="form-control" type="number" step="0.001" id="estoqueMinimo" th:field="*{estoqueMinimo}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('estoqueMinimo')}"
+                     th:errors="*{estoqueMinimo}"></div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Saldo atual</label>
+                <input class="form-control" type="text" th:value="*{saldo}" readonly>
+                <div class="form-text">Atualizado apenas por movimentacoes (RN003).</div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label" for="localizacao">Localizacao fisica</label>
+                <input class="form-control" id="localizacao" th:field="*{localizacao}" placeholder="Ex: Prateleira A3">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label" for="fornecedorPadrao">Fornecedor principal</label>
+                <select class="form-select" id="fornecedorPadrao" th:field="*{fornecedorPadrao}">
+                    <option value="">Nao informado</option>
+                    <option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}"
+                            th:text="${fornecedor.razaoSocial}"></option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <!-- RN010: preco abaixo do custo medio exige confirmacao explicita -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmaMargemNegativa"
+                           name="confirmaMargemNegativa" value="true">
+                    <label class="form-check-label" for="confirmaMargemNegativa">Confirmo margem negativa</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" th:href="@{/produtos}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>
