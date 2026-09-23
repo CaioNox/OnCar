@@ -15,14 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Cadastro de usuarios (RF02), troca de senha (RF03) e politica de senhas
- * e bloqueio de conta (RN014).
- */
 @Service
 public class UsuarioService {
 
-    /** RN014: minimo de 8 caracteres, com ao menos uma letra e um numero. */
     private static final Pattern SENHA_VALIDA = Pattern.compile("^(?=.*[a-zA-Z])(?=.*\\d).{8,}$");
     private static final int SENHAS_ANTERIORES_BLOQUEADAS = 3;
     private static final int MAXIMO_TENTATIVAS = 5;
@@ -63,7 +58,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegistroNaoEncontradoException("Usuario nao encontrado."));
     }
 
-    /** RF02: cadastro de usuario com senha submetida a politica da RN014. */
     @Transactional
     public Usuario cadastrar(Usuario usuario, String senhaEmTexto) {
         if (usuarioRepository.existsByEmailIgnoreCase(usuario.getEmail())) {
@@ -80,7 +74,6 @@ public class UsuarioService {
         return salvo;
     }
 
-    /** RF02: edicao dos dados cadastrais; a senha e trocada em operacao propria. */
     @Transactional
     public Usuario atualizar(Long id, Usuario dados) {
         Usuario usuario = buscarPorId(id);
@@ -99,7 +92,6 @@ public class UsuarioService {
         return salvo;
     }
 
-    /** RN009: usuario com movimentacoes vinculadas e inativado, nunca excluido. */
     @Transactional
     public void inativar(Long id) {
         Usuario usuario = buscarPorId(id);
@@ -120,7 +112,6 @@ public class UsuarioService {
                 "Usuario " + usuario.getEmail() + " reativado");
     }
 
-    /** RN009: a exclusao so e permitida enquanto nao houver registros vinculados. */
     @Transactional
     public void excluir(Long id) {
         Usuario usuario = buscarPorId(id);
@@ -134,7 +125,6 @@ public class UsuarioService {
                 "Usuario " + usuario.getEmail() + " excluido");
     }
 
-    /** RF03 e RN014: troca de senha com verificacao das tres ultimas utilizadas. */
     @Transactional
     public void alterarSenha(String email, String senhaAtual, String novaSenha, String confirmacao) {
         Usuario usuario = buscarPorEmail(email);
@@ -153,7 +143,6 @@ public class UsuarioService {
                 "Senha alterada pelo proprio usuario");
     }
 
-    /** RF03: redefinicao de senha por um perfil administrador. */
     @Transactional
     public void redefinirSenha(Long id, String novaSenha) {
         Usuario usuario = buscarPorId(id);
@@ -168,7 +157,6 @@ public class UsuarioService {
                 "Senha do usuario " + usuario.getEmail() + " redefinida");
     }
 
-    /** RN014: cinco falhas consecutivas bloqueiam a conta por 15 minutos. */
     @Transactional
     public void registrarFalhaDeLogin(String email) {
         usuarioRepository.findByEmailIgnoreCase(email).ifPresent(usuario -> {

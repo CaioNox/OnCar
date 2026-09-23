@@ -16,10 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Cadastro e consulta de produtos (RF04 e RF07), com as regras de unicidade
- * do SKU (RN001), inativacao (RN009) e consistencia entre preco e custo (RN010).
- */
 @Service
 public class ProdutoService {
 
@@ -45,13 +41,11 @@ public class ProdutoService {
         return produtoRepository.findByAtivoTrueOrderByDescricaoAsc();
     }
 
-    /** RF12 e RN005: itens que atingiram o estoque minimo. */
     @Transactional(readOnly = true)
     public List<Produto> listarAbaixoDoMinimo() {
         return produtoRepository.findAbaixoDoMinimo();
     }
 
-    /** RF07: pesquisa por descricao, SKU, categoria, marca ou fornecedor. */
     @Transactional(readOnly = true)
     public List<Produto> pesquisar(String termo, CategoriaProduto categoria, Long fornecedorId,
                                    boolean somenteAtivos) {
@@ -71,7 +65,6 @@ public class ProdutoService {
         return total == null ? BigDecimal.ZERO : total;
     }
 
-    /** RF04: inclusao de produto. O saldo inicial e sempre zero (RN003). */
     @Transactional
     public Produto cadastrar(Produto produto, boolean confirmaMargemNegativa) {
         validarSkuUnico(produto.getSku(), null);
@@ -84,7 +77,6 @@ public class ProdutoService {
         return salvo;
     }
 
-    /** RF04: edicao dos dados cadastrais. Saldo e custo medio nao sao editaveis (RN003 e RN004). */
     @Transactional
     public Produto atualizar(Long id, Produto dados, boolean confirmaMargemNegativa) {
         Produto produto = buscarPorId(id);
@@ -106,7 +98,6 @@ public class ProdutoService {
         return salvo;
     }
 
-    /** RN009: produto com movimentacoes e inativado, nunca excluido. */
     @Transactional
     public void inativar(Long id) {
         Produto produto = buscarPorId(id);
@@ -125,7 +116,6 @@ public class ProdutoService {
                 "Produto " + produto.getSku() + " reativado");
     }
 
-    /** RN009: exclusao permitida apenas para produtos sem historico. */
     @Transactional
     public void excluir(Long id) {
         Produto produto = buscarPorId(id);
@@ -138,10 +128,6 @@ public class ProdutoService {
                 "Produto " + produto.getSku() + " excluido");
     }
 
-    /**
-     * RN001: o SKU e unico na oficina, desconsiderando caixa e espacos nas
-     * extremidades, e a verificacao alcanca tambem os produtos inativos.
-     */
     private void validarSkuUnico(String sku, Long idAtual) {
         String normalizado = Produto.normalizarSku(sku);
         produtoRepository.findBySkuNormalizado(normalizado)
@@ -153,11 +139,6 @@ public class ProdutoService {
                 });
     }
 
-    /**
-     * RN010: preco de venda inferior ao custo medio e bloqueado para o Atendente e,
-     * para Proprietario e Gerente de Estoque, exige confirmacao explicita registrada
-     * no log de auditoria.
-     */
     private void validarMargem(Produto produto, boolean confirmaMargemNegativa) {
         BigDecimal custo = produto.getPrecoCusto();
         BigDecimal venda = produto.getPrecoVenda();

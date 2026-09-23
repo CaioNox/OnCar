@@ -17,10 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-/**
- * Carga de demonstracao do ambiente de desenvolvimento: um usuario de cada perfil,
- * fornecedores e produtos com saldo inicial gerado por entradas reais (RN003).
- */
 @Configuration
 @Profile("dev")
 public class CargaInicial {

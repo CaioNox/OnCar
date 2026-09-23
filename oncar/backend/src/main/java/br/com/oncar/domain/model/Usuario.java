@@ -15,10 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-/**
- * Usuario da aplicacao (RF02). O controle de bloqueio por tentativas
- * malsucedidas e o historico de senhas atendem a RN014.
- */
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -57,7 +53,6 @@ public class Usuario {
     @Column(name = "criado_em", nullable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    /** RN014: a conta permanece bloqueada enquanto a janela de 15 minutos nao expirar. */
     public boolean isBloqueado() {
         return bloqueadoAte != null && bloqueadoAte.isAfter(LocalDateTime.now());
     }

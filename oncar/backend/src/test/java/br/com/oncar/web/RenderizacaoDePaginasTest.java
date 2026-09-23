@@ -22,10 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-/**
- * Garante que as telas continuam renderizando com dados reais: as associacoes
- * exibidas precisam vir carregadas, ja que a sessao do JPA nao fica aberta na view.
- */
 @AutoConfigureMockMvc
 @WithMockUser(username = "proprietario@teste.com.br", roles = "PROPRIETARIO")
 class RenderizacaoDePaginasTest extends TesteIntegracao {

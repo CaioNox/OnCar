@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Sessao da API REST (RF01). Mantem a mesma autenticacao por sessao usada pelo
- * painel Thymeleaf, incluindo o bloqueio por tentativas malsucedidas da RN014.
- */
 @RestController
 @RequestMapping("/api/sessao")
 public class SessaoApiController {

@@ -15,9 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Regras de movimentacao de estoque: RN002, RN003, RN004, RN006 e RN008.
- */
 class EstoqueServiceTest extends TesteIntegracao {
 
     @Autowired

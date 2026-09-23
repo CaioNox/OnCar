@@ -20,13 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Nucleo do controle de estoque: entradas (RF08), saidas (RF09), atualizacao
- * automatica do saldo (RF10), ajuste de inventario (RF11), extrato (RF13) e estorno.
- *
- * <p>Cada operacao grava a movimentacao e atualiza o saldo do produto dentro de
- * uma unica transacao (RN003); qualquer falha desfaz as duas etapas.</p>
- */
 @Service
 public class EstoqueService {
 
@@ -50,10 +43,6 @@ public class EstoqueService {
         this.auditoriaService = auditoriaService;
     }
 
-    /**
-     * RF08: entrada de mercadoria. Alem de somar a quantidade ao saldo, recalcula
-     * o custo medio ponderado do produto conforme a RN004.
-     */
     @Transactional
     public Movimentacao registrarEntrada(Long produtoId, BigDecimal quantidade, BigDecimal custoUnitario,
                                          Fornecedor fornecedor, String documento, LocalDate competencia,
@@ -85,11 +74,6 @@ public class EstoqueService {
         return salva;
     }
 
-    /**
-     * RF09: saida por venda de balcao, ordem de servico, devolucao ao fornecedor
-     * ou perda/avaria. A operacao e integralmente rejeitada se o saldo for
-     * insuficiente (RN002).
-     */
     @Transactional
     public Movimentacao registrarSaida(Long produtoId, BigDecimal quantidade, MotivoMovimentacao motivo,
                                        Cliente cliente, String documento, LocalDate competencia,
@@ -124,10 +108,6 @@ public class EstoqueService {
         return salva;
     }
 
-    /**
-     * RF11 e RN006: ajuste de inventario apos contagem fisica. Exige o saldo
-     * apurado e uma justificativa com no minimo dez caracteres.
-     */
     @Transactional
     public Movimentacao ajustarInventario(Long produtoId, BigDecimal saldoApurado, String justificativa,
                                           LocalDate competencia, String emailUsuario) {
@@ -159,11 +139,6 @@ public class EstoqueService {
         return salva;
     }
 
-    /**
-     * RN008: movimentacoes confirmadas nao sao editadas nem excluidas. A correcao
-     * de um lancamento equivocado gera um novo lancamento de sinal contrario,
-     * referenciando o documento original e exigindo justificativa.
-     */
     @Transactional
     public Movimentacao estornar(Long movimentacaoId, String justificativa, String emailUsuario) {
         Movimentacao original = movimentacaoRepository.findById(movimentacaoId)
@@ -223,7 +198,6 @@ public class EstoqueService {
         return salva;
     }
 
-    /** RF13: extrato (kardex) do produto. */
     @Transactional(readOnly = true)
     public List<Movimentacao> listarExtrato(Long produtoId) {
         return movimentacaoRepository.buscarExtrato(carregarProduto(produtoId));
@@ -239,10 +213,6 @@ public class EstoqueService {
         return movimentacaoRepository.buscarPorCompetencia(inicio, fim);
     }
 
-    /**
-     * RN004: CMP = (saldo anterior x custo anterior + quantidade recebida x custo da compra)
-     * / (saldo anterior + quantidade recebida).
-     */
     BigDecimal calcularCustoMedioPonderado(BigDecimal saldoAnterior, BigDecimal custoAnterior,
                                            BigDecimal quantidade, BigDecimal custoCompra) {
         BigDecimal custoAtual = custoAnterior == null ? BigDecimal.ZERO : custoAnterior;
@@ -257,10 +227,6 @@ public class EstoqueService {
                 .divide(denominador, ESCALA_CUSTO, RoundingMode.HALF_UP);
     }
 
-    /**
-     * Desfaz o efeito de uma entrada sobre o custo medio (usado no estorno).
-     * Sem saldo remanescente, o custo anterior deixa de ser apuravel e e mantido.
-     */
     BigDecimal reverterCustoMedioPonderado(BigDecimal saldoAtual, BigDecimal custoAtual,
                                            BigDecimal quantidade, BigDecimal custoEntrada) {
         BigDecimal custo = custoAtual == null ? BigDecimal.ZERO : custoAtual;
@@ -310,7 +276,6 @@ public class EstoqueService {
         }
     }
 
-    /** RN006 e RN008: justificativa textual obrigatoria com no minimo dez caracteres. */
     private void validarJustificativa(String justificativa) {
         if (justificativa == null || justificativa.trim().length() < TAMANHO_MINIMO_JUSTIFICATIVA) {
             throw new RegraNegocioException("Informe uma justificativa com no minimo "

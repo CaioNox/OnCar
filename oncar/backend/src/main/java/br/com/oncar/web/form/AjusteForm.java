@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * Ajuste de inventario apos contagem fisica (RF11 e RN006).
- */
 public class AjusteForm {
 
     @NotNull(message = "Selecione o produto")

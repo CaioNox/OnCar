@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/**
- * Cadastro e edicao de usuarios (RF02). A senha so e exigida na inclusao.
- */
 public class UsuarioForm {
 
     private Long id;

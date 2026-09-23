@@ -11,10 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Carrega o usuario autenticado para o Spring Security (RF01).
- * Contas inativas e contas bloqueadas pela RN014 sao recusadas.
- */
 @Service
 public class DetalhesUsuarioService implements UserDetailsService {
 

@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 
 Write-Host "==> Verificando ferramentas"
-foreach ($t in "java","mvn","node","npm") {
+foreach ($t in "java","node","npm") {
     if (-not (Get-Command $t -ErrorAction SilentlyContinue)) {
         Write-Error "$t nao encontrado no PATH"; exit 1
     }
@@ -14,7 +14,7 @@ Set-Location "$root\oncar\backend"
 if (-not (Test-Path .env) -and (Test-Path .env.example)) {
     Copy-Item .env.example .env; Write-Host "   .env criado a partir de .env.example"
 }
-mvn -B dependency:go-offline
+.\mvnw.cmd -B dependency:go-offline
 
 Write-Host "==> Frontend: dependencias npm"
 Set-Location "$root\oncar\frontend"

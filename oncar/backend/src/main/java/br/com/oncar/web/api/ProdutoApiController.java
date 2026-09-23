@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Consulta de produtos e do extrato pela API REST (RF04, RF07, RF12 e RF13).
- */
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoApiController {
@@ -39,7 +36,6 @@ public class ProdutoApiController {
         return converter(produtoService.pesquisar(termo, categoria, fornecedorId, somenteAtivos));
     }
 
-    /** RF12 e RN005: itens que atingiram o estoque minimo. */
     @GetMapping("/reposicao")
     public List<RespostaDtos.ProdutoResumo> reposicao() {
         return converter(produtoService.listarAbaixoDoMinimo());
@@ -50,7 +46,6 @@ public class ProdutoApiController {
         return RespostaDtos.ProdutoResumo.de(produtoService.buscarPorId(id), permissoes.podeVerCustos());
     }
 
-    /** RF13: extrato (kardex) do produto. */
     @GetMapping("/{id}/extrato")
     public List<RespostaDtos.MovimentacaoResumo> extrato(@PathVariable Long id) {
         return estoqueService.listarExtrato(id).stream()

@@ -22,10 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
-/**
- * Base dos testes de integracao: sobe o contexto com o banco em memoria e
- * garante o mesmo estado inicial para cada cenario.
- */
 @SpringBootTest
 @ActiveProfiles("test")
 public abstract class TesteIntegracao {

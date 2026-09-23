@@ -13,9 +13,6 @@ import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Cliente da oficina e seus veiculos (RF06).
- */
 @Entity
 @Table(name = "cliente")
 public class Cliente {

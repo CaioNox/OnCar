@@ -12,9 +12,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Veiculo associado a um cliente (RF06).
- */
 @Entity
 @Table(name = "veiculo")
 public class Veiculo {

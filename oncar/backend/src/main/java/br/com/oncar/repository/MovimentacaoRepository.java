@@ -9,13 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-/**
- * As consultas de listagem carregam produto e usuario junto com a movimentacao,
- * porque a aplicacao nao mantem a sessao do JPA aberta durante a renderizacao.
- */
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long> {
 
-    /** RF13: extrato (kardex) do produto. */
     @Query("""
             select m from Movimentacao m
             join fetch m.produto
@@ -44,7 +39,6 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao, Long
     @Query("select count(m) > 0 from Movimentacao m where m.usuario.id = :usuarioId")
     boolean existsByUsuarioId(@Param("usuarioId") Long usuarioId);
 
-    /** RN012: os relatorios consideram o mes de competencia do lancamento. */
     @Query("""
             select m from Movimentacao m
             join fetch m.produto

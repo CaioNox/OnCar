@@ -2,9 +2,6 @@ package br.com.oncar.web.form;
 
 import jakarta.validation.constraints.NotBlank;
 
-/**
- * Troca da propria senha (RF03), validada tambem pela politica da RN014.
- */
 public class AlterarSenhaForm {
 
     @NotBlank(message = "Informe a senha atual")

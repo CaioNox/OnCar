@@ -29,8 +29,12 @@ A organizacao segue o padrao MVC com separacao entre apresentacao (`web`), servi
 ### Desenvolvimento (H2 em memoria, com dados de demonstracao)
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
+
+> No Windows use `.\mvnw.cmd spring-boot:run`. O wrapper baixa o Maven 3.9 na
+> primeira execucao, entao nao e preciso instalar o Maven. Requer apenas um JDK
+> (17 ou mais recente; testado ate o 26).
 
 A aplicacao sobe em <http://localhost:8080> com o perfil `dev`, que cria um usuario de
 cada perfil e alguns produtos. Todos os usuarios de demonstracao usam a senha `oncar2026`:
@@ -57,13 +61,13 @@ Ou, com um PostgreSQL proprio:
 export ONCAR_DB_URL=jdbc:postgresql://localhost:5432/oncar
 export ONCAR_DB_USER=oncar
 export ONCAR_DB_PASSWORD=suasenha
-mvn spring-boot:run -Dspring-boot.run.profiles=prod
+./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 ### Testes
 
 ```bash
-mvn test
+./mvnw test
 ```
 
 ## Requisitos implementados

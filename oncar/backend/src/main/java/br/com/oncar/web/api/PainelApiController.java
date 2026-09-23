@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Indicadores da tela inicial: lista de reposicao (RF12 e RN005) e ultimas
- * movimentacoes. O valor imobilizado em estoque so acompanha os perfis com
- * acesso financeiro (RN007).
- */
 @RestController
 @RequestMapping("/api/painel")
 public class PainelApiController {

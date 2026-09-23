@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Cadastro de clientes e veiculos (RF06).
- */
 @Controller
 @RequestMapping("/clientes")
 public class ClienteController {
@@ -89,7 +86,6 @@ public class ClienteController {
         return "redirect:/clientes";
     }
 
-    /** Linhas em branco para o cadastro de novos veiculos direto no formulario. */
     private void acrescentarSlots(Cliente cliente) {
         for (int i = 0; i < SLOTS_VEICULOS_VAZIOS; i++) {
             cliente.getVeiculos().add(new Veiculo());

@@ -13,10 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-/**
- * RN007: as telas sao liberadas conforme o perfil do usuario autenticado e as
- * tentativas de acesso nao autorizado sao bloqueadas pelo servidor.
- */
 @AutoConfigureMockMvc
 class ControleDeAcessoTest extends TesteIntegracao {
 

@@ -19,11 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Movimentacoes de estoque pela API REST: entrada (RF08), saida (RF09),
- * ajuste (RF11) e estorno (RN008). As regras ficam no servico de estoque -
- * aqui apenas traduzimos a requisicao.
- */
 @RestController
 @RequestMapping("/api/movimentacoes")
 public class MovimentacaoApiController {
@@ -82,7 +77,6 @@ public class MovimentacaoApiController {
                 estoqueService.estornar(id, requisicao.justificativa(), principal.getName()));
     }
 
-    /** Motivos de saida aceitos pelo RF09. */
     @GetMapping("/motivos")
     public List<RespostaDtos.Opcao> motivos() {
         return java.util.Arrays.stream(MotivoMovimentacao.values())

@@ -6,14 +6,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> Verificando ferramentas"
 command -v java >/dev/null || { echo "ERRO: JDK 17 nao encontrado"; exit 1; }
-command -v mvn  >/dev/null || { echo "ERRO: Maven nao encontrado"; exit 1; }
 command -v node >/dev/null || { echo "ERRO: Node.js 20+ nao encontrado"; exit 1; }
 command -v npm  >/dev/null || { echo "ERRO: npm nao encontrado"; exit 1; }
 
 echo "==> Backend: dependencias Maven"
 cd "$ROOT/oncar/backend"
 [ -f .env ] || { [ -f .env.example ] && cp .env.example .env && echo "   .env criado a partir de .env.example"; }
-mvn -B dependency:go-offline
+./mvnw -B dependency:go-offline
 
 echo "==> Frontend: dependencias npm"
 cd "$ROOT/oncar/frontend"

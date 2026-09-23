@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Listas de apoio consumidas pelos formularios do front-end (RF05, RF06 e RF20).
- */
 @RestController
 @RequestMapping("/api")
 public class CadastrosApiController {
@@ -50,7 +47,6 @@ public class CadastrosApiController {
                 .toList();
     }
 
-    /** RF20: consulta do log de auditoria, restrita ao Proprietario (RN007). */
     @GetMapping("/auditoria")
     public List<RespostaDtos.RegistroAuditoria> auditoria() {
         return auditoriaService.listarRecentes().stream()

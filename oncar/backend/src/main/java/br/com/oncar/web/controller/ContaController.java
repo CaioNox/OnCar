@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Troca da propria senha pelo usuario autenticado (RF03).
- */
 @Controller
 @RequestMapping("/conta")
 public class ContaController {

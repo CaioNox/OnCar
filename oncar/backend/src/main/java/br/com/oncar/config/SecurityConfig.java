@@ -39,14 +39,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-/**
- * Autenticacao e autorizacao da aplicacao (RF01, RNF05 e RN007).
- *
- * <p>Uma unica configuracao atende as duas interfaces: o painel Thymeleaf, com
- * formulario de login, e a API REST consumida pelo front-end, que responde 401 e
- * 403 em JSON no lugar de redirecionar. Ambas compartilham a mesma sessao, o mesmo
- * hash BCrypt e as mesmas regras de perfil.</p>
- */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -56,11 +48,9 @@ public class SecurityConfig {
     private static final String ATENDENTE = Perfil.ATENDENTE.name();
     private static final AntPathRequestMatcher REQUISICOES_DA_API = new AntPathRequestMatcher("/api/**");
 
-    /** Origens do front-end autorizadas a consumir a API com credenciais. */
     @Value("${oncar.frontend.origens:http://localhost:3000}")
     private List<String> origensDoFrontend;
 
-    /** RNF05: hash BCrypt para as senhas. */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -145,7 +135,6 @@ public class SecurityConfig {
         return fonte;
     }
 
-    /** RN014: zera o contador de tentativas e registra o acesso. */
     @Bean
     public AuthenticationSuccessHandler successHandler(@Lazy UsuarioService usuarioService) {
         return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
@@ -154,7 +143,6 @@ public class SecurityConfig {
         };
     }
 
-    /** RN014: contabiliza a falha e bloqueia a conta apos cinco tentativas. */
     @Bean
     public AuthenticationFailureHandler failureHandler(@Lazy UsuarioService usuarioService) {
         return (HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) -> {
@@ -167,7 +155,6 @@ public class SecurityConfig {
         };
     }
 
-    /** RN007: tentativas de acesso nao autorizado sao bloqueadas e auditadas. */
     @Bean
     public AccessDeniedHandler accessDeniedHandler(@Lazy AuditoriaService auditoriaService) {
         return (HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception) -> {

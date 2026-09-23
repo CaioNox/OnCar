@@ -11,10 +11,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
-/**
- * Guarda os hashes das senhas ja utilizadas para impedir a repeticao
- * das tres ultimas (RN014).
- */
 @Entity
 @Table(name = "senha_historico")
 public class SenhaHistorico {

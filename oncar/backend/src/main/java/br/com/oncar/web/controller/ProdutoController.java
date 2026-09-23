@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Cadastro, pesquisa e extrato de produtos (RF04, RF07, RF12 e RF13).
- */
 @Controller
 @RequestMapping("/produtos")
 public class ProdutoController {
@@ -36,7 +33,6 @@ public class ProdutoController {
         this.estoqueService = estoqueService;
     }
 
-    /** RF07: busca por descricao, SKU, categoria, marca ou fornecedor. */
     @GetMapping
     public String listar(@RequestParam(required = false) String termo,
                          @RequestParam(required = false) CategoriaProduto categoria,
@@ -53,7 +49,6 @@ public class ProdutoController {
         return "produto/lista";
     }
 
-    /** RF12: lista de reposicao. */
     @GetMapping("/reposicao")
     public String reposicao(Model model) {
         model.addAttribute("produtos", produtoService.listarAbaixoDoMinimo());
@@ -92,7 +87,6 @@ public class ProdutoController {
         return "redirect:/produtos";
     }
 
-    /** RF13: extrato (kardex) do produto. */
     @GetMapping("/{id}/extrato")
     public String extrato(@PathVariable Long id, Model model) {
         model.addAttribute("produto", produtoService.buscarPorId(id));

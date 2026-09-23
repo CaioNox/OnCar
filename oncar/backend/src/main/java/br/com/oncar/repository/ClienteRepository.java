@@ -10,7 +10,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Optional<Cliente> findByDocumento(String documento);
 
-    /** Os veiculos vem carregados porque a listagem os exibe fora da sessao do JPA. */
     @Query("""
             select distinct c from Cliente c
             left join fetch c.veiculos

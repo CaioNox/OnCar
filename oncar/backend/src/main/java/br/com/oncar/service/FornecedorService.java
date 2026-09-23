@@ -10,9 +10,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Cadastro de fornecedores (RF05), com inativacao no lugar da exclusao (RN009).
- */
 @Service
 public class FornecedorService {
 
@@ -87,7 +84,6 @@ public class FornecedorService {
                 "Fornecedor " + fornecedor.getRazaoSocial() + " reativado");
     }
 
-    /** RN009: fornecedor com entradas registradas nao pode ser excluido. */
     @Transactional
     public void excluir(Long id) {
         Fornecedor fornecedor = buscarPorId(id);

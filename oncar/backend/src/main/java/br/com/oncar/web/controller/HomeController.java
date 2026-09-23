@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * Tela inicial com a lista de reposicao (RF12 e RN005) e as ultimas movimentacoes.
- */
 @Controller
 public class HomeController {
 

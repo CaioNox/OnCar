@@ -24,10 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Movimentacoes de estoque: entrada (RF08), saida (RF09), ajuste (RF11) e
- * estorno (RN008).
- */
 @Controller
 @RequestMapping("/movimentacoes")
 public class MovimentacaoController {
@@ -120,7 +116,6 @@ public class MovimentacaoController {
         return "redirect:/movimentacoes";
     }
 
-    /** RN008: correcao de lancamento equivocado por estorno. */
     @PostMapping("/{id}/estorno")
     public String estornar(@PathVariable Long id, @RequestParam String justificativa,
                            Principal principal, RedirectAttributes atributos) {

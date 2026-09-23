@@ -11,9 +11,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-/**
- * Fornecedor de mercadorias (RF05).
- */
 @Entity
 @Table(name = "fornecedor")
 public class Fornecedor {

@@ -1,9 +1,5 @@
 package br.com.oncar.domain.enums;
 
-/**
- * Perfis de acesso previstos no item 4.2 da documentacao e na RN007.
- * A constante {@link #ROLE_PREFIX} mantem os nomes alinhados as authorities do Spring Security.
- */
 public enum Perfil {
 
     PROPRIETARIO("Proprietario"),

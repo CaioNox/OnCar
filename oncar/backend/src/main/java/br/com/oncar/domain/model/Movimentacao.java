@@ -18,13 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 
-/**
- * Lancamento do extrato (kardex) de um produto - RF13.
- *
- * <p>Movimentacoes confirmadas sao imutaveis (RN008): nao existem operacoes de
- * edicao ou exclusao, apenas o estorno, que gera um novo lancamento de sinal
- * contrario referenciando o original.</p>
- */
 @Entity
 @Table(name = "movimentacao")
 public class Movimentacao {
@@ -45,7 +38,6 @@ public class Movimentacao {
     @Column(name = "motivo", nullable = false, length = 40)
     private MotivoMovimentacao motivo;
 
-    /** Quantidade sempre positiva; o efeito no saldo vem do tipo. */
     @Column(name = "quantidade", nullable = false, precision = 12, scale = 3)
     private BigDecimal quantidade;
 
@@ -79,11 +71,9 @@ public class Movimentacao {
     @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora = LocalDateTime.now();
 
-    /** Data de competencia do lancamento (RN012), independente da data de digitacao. */
     @Column(name = "competencia", nullable = false)
     private LocalDate competencia = LocalDate.now();
 
-    /** Movimentacao original, preenchida apenas nos lancamentos de estorno (RN008). */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movimentacao_origem_id")
     private Movimentacao movimentacaoOrigem;
@@ -95,7 +85,6 @@ public class Movimentacao {
         return competencia == null ? null : YearMonth.from(competencia);
     }
 
-    /** Valor financeiro do lancamento, usado nos relatorios. */
     public BigDecimal getValorTotal() {
         if (quantidade == null || custoUnitario == null) {
             return BigDecimal.ZERO;

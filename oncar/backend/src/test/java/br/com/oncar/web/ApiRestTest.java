@@ -18,10 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-/**
- * API REST consumida pelo front-end: autenticacao (RF01), consulta de produtos
- * (RF07), movimentacoes (RF08 e RF09) e as restricoes de perfil da RN007.
- */
 @AutoConfigureMockMvc
 class ApiRestTest extends TesteIntegracao {
 

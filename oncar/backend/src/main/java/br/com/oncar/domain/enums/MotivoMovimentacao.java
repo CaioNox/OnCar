@@ -5,9 +5,6 @@ import static br.com.oncar.domain.enums.TipoMovimentacao.ENTRADA;
 import static br.com.oncar.domain.enums.TipoMovimentacao.ESTORNO;
 import static br.com.oncar.domain.enums.TipoMovimentacao.SAIDA;
 
-/**
- * Motivo obrigatorio de cada movimentacao (RF08 e RF09).
- */
 public enum MotivoMovimentacao {
 
     COMPRA_FORNECEDOR("Compra de fornecedor", ENTRADA),

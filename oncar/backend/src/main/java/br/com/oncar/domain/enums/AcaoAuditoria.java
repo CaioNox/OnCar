@@ -1,8 +1,5 @@
 package br.com.oncar.domain.enums;
 
-/**
- * Operacoes registradas no log de auditoria (RF20).
- */
 public enum AcaoAuditoria {
 
     INCLUSAO("Inclusao"),

@@ -8,9 +8,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * Converte o identificador enviado pelos formularios na entidade correspondente.
- */
 @Configuration
 public class ConversoresConfig implements WebMvcConfigurer {
 

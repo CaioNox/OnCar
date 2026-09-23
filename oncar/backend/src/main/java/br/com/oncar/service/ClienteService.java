@@ -11,9 +11,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Cadastro de clientes e veiculos (RF06), com inativacao no lugar da exclusao (RN009).
- */
 @Service
 public class ClienteService {
 
@@ -94,7 +91,6 @@ public class ClienteService {
                 "Cliente " + cliente.getNome() + " reativado");
     }
 
-    /** RN009: cliente com saidas vinculadas nao pode ser excluido. */
     @Transactional
     public void excluir(Long id) {
         Cliente cliente = buscarPorId(id);

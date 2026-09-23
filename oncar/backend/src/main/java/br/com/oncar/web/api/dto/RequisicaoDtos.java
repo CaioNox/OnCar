@@ -9,9 +9,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * Corpos de requisicao aceitos pela API REST.
- */
 public final class RequisicaoDtos {
 
     private RequisicaoDtos() {
@@ -22,7 +19,6 @@ public final class RequisicaoDtos {
             @NotBlank(message = "Informe a senha") String senha) {
     }
 
-    /** RF08: entrada de mercadoria. */
     public record Entrada(
             @NotNull(message = "Selecione o produto") Long produtoId,
             @NotNull(message = "Informe a quantidade recebida")
@@ -34,7 +30,6 @@ public final class RequisicaoDtos {
             LocalDate competencia) {
     }
 
-    /** RF09: saida de estoque. */
     public record Saida(
             @NotNull(message = "Selecione o produto") Long produtoId,
             @NotNull(message = "Informe a quantidade")
@@ -45,7 +40,6 @@ public final class RequisicaoDtos {
             LocalDate competencia) {
     }
 
-    /** RF11 e RN006: ajuste de inventario. */
     public record Ajuste(
             @NotNull(message = "Selecione o produto") Long produtoId,
             @NotNull(message = "Informe o saldo apurado na contagem")
@@ -55,7 +49,6 @@ public final class RequisicaoDtos {
             LocalDate competencia) {
     }
 
-    /** RN008: estorno de movimentacao. */
     public record Estorno(
             @Size(min = 10, max = 500, message = "A justificativa deve conter no minimo 10 caracteres")
             String justificativa) {

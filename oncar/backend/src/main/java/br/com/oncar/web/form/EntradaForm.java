@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * Dados do lancamento de entrada de mercadoria (RF08).
- */
 public class EntradaForm {
 
     @NotNull(message = "Selecione o produto")
@@ -25,7 +22,6 @@ public class EntradaForm {
 
     private Long fornecedorId;
 
-    /** Numero da NF-e vinculada, opcional conforme o RF08. */
     private String documento;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

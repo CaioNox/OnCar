@@ -11,9 +11,9 @@ Projeto com dois módulos em `oncar/`:
 
 | Ferramenta | Versão mínima | Como obter |
 | --- | --- | --- |
-| JDK | 17 (LTS) | https://adoptium.net/ |
-| Maven | 3.9+ | https://maven.apache.org/download.cgi |
-| Node.js | 20 LTS+ | https://nodejs.org/ |
+| JDK | 17+ (testado até o 26) | https://adoptium.net/ |
+| Maven | não é preciso instalar — use o wrapper `./mvnw` (baixa o Maven 3.9 na 1ª execução) | — |
+| Node.js | 20 LTS+ (testado até o 24) | https://nodejs.org/ |
 | npm | 10+ (vem com o Node) | — |
 | Docker + Docker Compose | opcional (produção/Postgres) | https://docs.docker.com/get-docker/ |
 | Git | qualquer recente | https://git-scm.com/ |
@@ -21,11 +21,13 @@ Projeto com dois módulos em `oncar/`:
 Verifique tudo de uma vez:
 
 ```bash
-java -version      # deve indicar 17.x
-mvn -version
-node -v             # v20+ ou v22+
+java -version      # 17 ou mais recente
+node -v            # v20+
 npm -v
 ```
+
+O Maven vem pelo wrapper do projeto (`oncar/backend/mvnw` no Linux/macOS,
+`mvnw.cmd` no Windows); não precisa instalá-lo à parte.
 
 ## Instalação das dependências
 
@@ -33,8 +35,8 @@ npm -v
 
 ```bash
 cd oncar/backend
-cp .env.example .env      # ajuste as variáveis
-mvn dependency:go-offline # baixa as dependências do Maven
+cp .env.example .env         # ajuste as variáveis
+./mvnw dependency:go-offline # baixa as dependências (mvnw.cmd no Windows)
 ```
 
 ### Frontend
@@ -60,7 +62,7 @@ Na raiz do repositório:
 
 ```bash
 cd oncar/backend
-mvn spring-boot:run
+./mvnw spring-boot:run        # Windows: .\mvnw.cmd spring-boot:run
 ```
 
 Sobe em <http://localhost:8080> (perfil `dev`, dados de demonstração, senha `oncar2026`).
@@ -86,6 +88,6 @@ Sobe em <http://localhost:3000>.
 ## Testes
 
 ```bash
-cd oncar/backend && mvn test
+cd oncar/backend && ./mvnw test
 cd oncar/frontend && npm run lint
 ```

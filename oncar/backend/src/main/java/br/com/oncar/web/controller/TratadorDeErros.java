@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * RNF13: converte as violacoes de regra de negocio em mensagens em portugues,
- * apresentadas na propria tela de origem.
- */
 @ControllerAdvice
 public class TratadorDeErros {
 
@@ -22,10 +18,6 @@ public class TratadorDeErros {
         return "redirect:" + telaDeOrigem(request);
     }
 
-    /**
-     * Devolve o caminho interno da tela que originou a operacao. Enderecos externos
-     * sao descartados para que o cabecalho Referer nao redirecione para fora da aplicacao.
-     */
     private String telaDeOrigem(HttpServletRequest request) {
         String referer = request.getHeader("Referer");
         if (referer == null || referer.isBlank()) {

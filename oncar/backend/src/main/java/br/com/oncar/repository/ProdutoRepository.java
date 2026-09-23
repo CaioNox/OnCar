@@ -10,10 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    /** RN001: a unicidade considera inclusive produtos inativos. */
     Optional<Produto> findBySkuNormalizado(String skuNormalizado);
 
-    /** O fornecedor vem carregado porque o formulario de edicao o exibe fora da sessao do JPA. */
     @Query("select p from Produto p left join fetch p.fornecedorPadrao where p.id = :id")
     Optional<Produto> buscarComFornecedor(@Param("id") Long id);
 
@@ -21,7 +19,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByAtivoTrueOrderByDescricaoAsc();
 
-    /** RN005: produtos que atingiram o estoque minimo. */
     @Query("""
             select p from Produto p
             left join fetch p.fornecedorPadrao
@@ -30,7 +27,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
             """)
     List<Produto> findAbaixoDoMinimo();
 
-    /** RF07: busca por descricao, SKU, categoria, marca ou fornecedor. */
     @Query("""
             select p from Produto p
             left join p.fornecedorPadrao f

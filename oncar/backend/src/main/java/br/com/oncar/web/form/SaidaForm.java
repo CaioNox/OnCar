@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * Dados do lancamento de saida de estoque (RF09). O motivo e obrigatorio.
- */
 public class SaidaForm {
 
     @NotNull(message = "Selecione o produto")

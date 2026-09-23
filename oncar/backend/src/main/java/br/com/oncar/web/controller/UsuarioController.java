@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Gestao de usuarios e perfis (RF02 e RF03), restrita ao Proprietario (RN007).
- */
 @Controller
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -76,7 +73,6 @@ public class UsuarioController {
         return "redirect:/usuarios";
     }
 
-    /** RF03: redefinicao da senha de um usuario pelo Proprietario. */
     @PostMapping("/{id}/redefinir-senha")
     public String redefinirSenha(@PathVariable Long id, @RequestParam String novaSenha,
                                  RedirectAttributes atributos) {

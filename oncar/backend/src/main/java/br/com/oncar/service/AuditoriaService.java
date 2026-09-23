@@ -10,12 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Registro do log de auditoria (RF20).
- *
- * <p>Grava em transacao propria para que o log de uma tentativa rejeitada
- * sobreviva ao rollback da operacao de negocio.</p>
- */
 @Service
 public class AuditoriaService {
 

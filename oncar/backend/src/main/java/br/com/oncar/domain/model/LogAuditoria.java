@@ -11,10 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
-/**
- * Registro de auditoria das operacoes realizadas na aplicacao (RF20).
- * O usuario e gravado por e-mail para que o log sobreviva a exclusao do cadastro.
- */
 @Entity
 @Table(name = "log_auditoria")
 public class LogAuditoria {

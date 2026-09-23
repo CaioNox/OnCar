@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 
-/**
- * Regras do cadastro de produtos: RN001, RN005, RN009 e RN010.
- */
 class ProdutoServiceTest extends TesteIntegracao {
 
     @Autowired

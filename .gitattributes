@@ -1,0 +1,10 @@
+* text=auto
+
+# Scripts que precisam manter fim de linha LF para rodar em Linux/macOS
+*.sh    text eol=lf
+mvnw    text eol=lf
+setup.sh text eol=lf
+
+# Scripts do Windows mantêm CRLF
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf

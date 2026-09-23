@@ -10,9 +10,6 @@ import br.com.oncar.service.exception.RegraNegocioException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * Politica de senhas, bloqueio de conta e cadastro de usuarios: RN014 e RN009.
- */
 class UsuarioServiceTest extends TesteIntegracao {
 
     @Test

@@ -11,10 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * RNF13: a API devolve o mesmo tipo de mensagem em portugues apresentada nas telas,
- * com o codigo HTTP correspondente ao tipo de recusa.
- */
 @RestControllerAdvice(basePackages = "br.com.oncar.web.api")
 public class TratadorDeErrosApi {
 
@@ -37,7 +33,6 @@ public class TratadorDeErrosApi {
                 "Confira os dados informados antes de continuar.", detalhes));
     }
 
-    /** RN007: acesso negado devolve 403 em vez de redirecionar para uma tela. */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<RespostaDtos.Erro> acessoNegado(AccessDeniedException excecao) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RespostaDtos.Erro.de(

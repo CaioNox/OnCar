@@ -19,13 +19,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
-/**
- * Item de estoque da oficina (RF04).
- *
- * <p>O saldo e o custo medio ponderado sao atributos calculados exclusivamente
- * pelo servico de estoque (RN003 e RN004) - nunca digitados pelo usuario. O campo
- * {@code skuNormalizado} sustenta a unicidade insensivel a caixa e a espacos da RN001.</p>
- */
 @Entity
 @Table(name = "produto")
 public class Produto {
@@ -68,7 +61,6 @@ public class Produto {
     @Column(name = "preco_venda", nullable = false, precision = 12, scale = 2)
     private BigDecimal precoVenda = BigDecimal.ZERO;
 
-    /** Custo medio ponderado apurado pela RN004. */
     @Column(name = "preco_custo", nullable = false, precision = 12, scale = 4)
     private BigDecimal precoCusto = BigDecimal.ZERO;
 
@@ -90,12 +82,10 @@ public class Produto {
     @Column(name = "ativo", nullable = false)
     private boolean ativo = true;
 
-    /** RN005: o produto entra na lista de reposicao quando o saldo atinge o minimo. */
     public boolean isAbaixoDoMinimo() {
         return saldo != null && estoqueMinimo != null && saldo.compareTo(estoqueMinimo) <= 0;
     }
 
-    /** Valor imobilizado no item, usado no painel gerencial. */
     public BigDecimal getValorEmEstoque() {
         if (saldo == null || precoCusto == null) {
             return BigDecimal.ZERO;
