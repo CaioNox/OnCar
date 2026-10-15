@@ -151,7 +151,7 @@ function ConteudoDaPaleta({ aoFechar }: { aoFechar: () => void }) {
             id: "placa",
             group: "Veículos",
             label: `Placa ${consulta.trim().toUpperCase()}`,
-            description: "A API ainda não expõe veículos; o cadastro existe só no back-end (RF06).",
+            description: "Consulta de veículos em breve.",
             icon: icone("bi-car-front"),
             disabled: true,
             executar: () => undefined,

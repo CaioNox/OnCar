@@ -7,7 +7,7 @@ function texto(valor: string | string[] | undefined): string | undefined {
 }
 
 /**
- * RF08 a RF11 e RN008. A busca global chega aqui com `?aba=`, `?cliente=`
+ * Entradas, saidas, ajustes e estornos. A busca global chega aqui com `?aba=`, `?cliente=`
  * (pre-seleciona o cliente da saida) ou `?documento=` (filtra o historico).
  */
 export default async function PaginaDeMovimentacoes({ searchParams }: PageProps<"/movimentacoes">) {

@@ -1,7 +1,7 @@
 /**
  * Assistente da oficina - previa local.
  *
- * O back-end ainda nao tem o assistente de IA (RF19). Ate la, as respostas sao
+ * O back-end ainda nao tem o assistente de IA. Ate la, as respostas sao
  * montadas aqui a partir dos endpoints que ja existem, com regras simples por
  * palavra-chave. Quando houver um endpoint de IA, basta trocar `responder`.
  */
@@ -107,7 +107,7 @@ export async function responder(pergunta: string, produtos: Produto[]): Promise<
   if (/(valor|capital|quanto vale|custo total|dinheiro parado)/.test(texto)) {
     const painel = await api.get<Painel>("/painel");
     return painel.valorTotalEmEstoque === null
-      ? { texto: "O seu perfil não enxerga custos (RN007). Um proprietário ou gerente de estoque consegue ver esse valor." }
+      ? { texto: "O seu perfil não enxerga custos. Um proprietário ou gerente de estoque consegue ver esse valor." }
       : {
           texto: `O estoque vale ${formatarMoeda(painel.valorTotalEmEstoque)} a custo médio, somando ${plural(painel.produtosAtivos, "produto ativo", "produtos ativos")}.`,
         };

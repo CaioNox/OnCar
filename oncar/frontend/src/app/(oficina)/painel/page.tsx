@@ -30,7 +30,7 @@ export default function PaginaDoPainel() {
   return <ConteudoDoPainel />;
 }
 
-/** RF12 e RN005: indicadores, lista de reposicao e ultimas movimentacoes. */
+/** indicadores, lista de reposicao e ultimas movimentacoes. */
 function ConteudoDoPainel() {
   const usuario = useUsuario();
   const { painel, movimentacoes, produtos, atualizadoEm, carregado, erro, recarregar } = useOficina();
@@ -133,7 +133,7 @@ function CapitalEmEstoque({
           <i aria-hidden="true" className="bi bi-cash-stack text-sm text-ok-texto" />
           Capital em estoque
         </p>
-        <span className="rotulo">custo médio · RN004</span>
+        <span className="rotulo">custo médio</span>
       </div>
 
       <p className="fonte-display mt-7 text-kpi">
@@ -174,7 +174,7 @@ function CapitalEmEstoque({
   );
 }
 
-/** Quem nao ve custos (RN007) ganha a reposicao como ponto focal. */
+/** Quem nao ve custos ganha a reposicao como ponto focal. */
 function ItensParaRepor({ painel }: { painel: Painel }) {
   const repor = painel.itensAbaixoDoMinimo;
   return (
@@ -186,12 +186,12 @@ function ItensParaRepor({ painel }: { painel: Painel }) {
       <p className="fonte-display mt-7 text-kpi">{repor}</p>
       <p className="mt-3 text-sm text-muted-foreground">
         {repor > 0
-          ? `de ${painel.produtosAtivos} produtos ativos estão no mínimo ou abaixo dele (RN005).`
+          ? `de ${painel.produtosAtivos} produtos ativos estão no mínimo ou abaixo dele.`
           : "Nenhuma peça precisa de reposição agora."}
       </p>
       {repor > 0 && <NivelDeEstoque nivel="critico" className="mt-5" />}
       <p className="mt-10 border-t pt-6 text-xs text-muted-foreground">
-        O capital em estoque aparece só para proprietário e gerente de estoque (RN007).
+        O capital em estoque aparece só para proprietário e gerente de estoque.
       </p>
     </LiquidGlassCard>
   );
@@ -287,10 +287,6 @@ function Tacometros({ leituras }: { leituras: Leitura[] }) {
           ...corDoAnel(leitura, indice),
         }))}
       />
-      <p className="mt-auto pt-7 text-xs leading-relaxed text-muted-foreground">
-        Faturamento × meta e OS concluídas entram aqui quando a API tiver os módulos de ordens de
-        serviço e relatórios (RF14 e RF16).
-      </p>
     </div>
   );
 }
@@ -298,7 +294,7 @@ function Tacometros({ leituras }: { leituras: Leitura[] }) {
 function Reposicao({ lista }: { lista: Produto[] }) {
   return (
     <div className={superficieBento}>
-      <p className="rotulo">Reposição · RN005</p>
+      <p className="rotulo">Reposição</p>
       {lista.length === 0 ? (
         <EstadoVazio ilustracao="engrenagem" titulo="Tudo em ordem" className="py-8">
           Nenhuma peça está no estoque mínimo.
@@ -340,7 +336,7 @@ function UltimasMovimentacoes({ movimentacoes }: { movimentacoes: Movimentacao[]
     <section aria-labelledby="titulo-ultimas" className="mt-16 md:mt-24">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
-          <p className="rotulo">Kardex recente · RF13</p>
+          <p className="rotulo">Kardex recente</p>
           <h2 id="titulo-ultimas" className="fonte-display mt-2 text-2xl sm:text-3xl">
             Últimas movimentações
           </h2>
@@ -403,8 +399,7 @@ function FalhaNoPainel({ mensagem, aoTentar }: { mensagem: string; aoTentar: () 
   return (
     <section className="mx-auto max-w-xl py-16 text-center">
       <EstadoVazio ilustracao="engrenagem" titulo="Não deu para abrir o painel">
-        Verifique se o backend está rodando em{" "}
-        <code className="num">{process.env.NEXT_PUBLIC_API_URL}</code> e tente de novo.
+        Verifique sua conexão e tente de novo. Se o problema continuar, fale com o suporte.
       </EstadoVazio>
       <div className="mt-6 text-left">
         <Erro mensagem={mensagem} />
@@ -457,7 +452,7 @@ function AcoesRapidas() {
 function PrimeirosPassos() {
   const passos = [
     { titulo: "Cadastre as peças", texto: "SKU, descrição, unidade e mínimo. Ex.: FO-001 · Filtro de óleo · UN · mínimo 5." },
-    { titulo: "Lance a entrada inicial", texto: "Informe quantidade e custo; o custo médio (RN004) é calculado sozinho." },
+    { titulo: "Lance a entrada inicial", texto: "Informe quantidade e custo; o custo médio é calculado sozinho." },
     { titulo: "Registre as saídas", texto: "Cada baixa atualiza saldo e kardex; no mínimo, a peça entra na reposição." },
   ];
   return (

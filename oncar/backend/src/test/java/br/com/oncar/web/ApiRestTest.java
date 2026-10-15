@@ -33,7 +33,7 @@ class ApiRestTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF01: o login pela API devolve o perfil do usuario autenticado")
+    @DisplayName("o login pela API devolve o perfil do usuario autenticado")
     void loginPelaApiDevolvePerfil() throws Exception {
         mockMvc.perform(post("/api/sessao").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +44,7 @@ class ApiRestTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF01: credenciais invalidas devolvem 401 com mensagem em portugues")
+    @DisplayName("credenciais invalidas devolvem 401 com mensagem em portugues")
     void loginInvalidoDevolve401() throws Exception {
         mockMvc.perform(post("/api/sessao").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,14 +54,14 @@ class ApiRestTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF01: requisicao sem sessao recebe 401 em vez de redirecionamento")
+    @DisplayName("requisicao sem sessao recebe 401 em vez de redirecionamento")
     void apiSemSessaoDevolve401() throws Exception {
         mockMvc.perform(get("/api/painel")).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RF08 e RF10: a entrada pela API atualiza o saldo do produto")
+    @DisplayName("a entrada pela API atualiza o saldo do produto")
     void entradaPelaApiAtualizaSaldo() throws Exception {
         mockMvc.perform(post("/api/movimentacoes/entrada").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +78,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RN002: a saida acima do saldo devolve 400 com a mensagem da regra")
+    @DisplayName("a saida acima do saldo devolve 400 com a mensagem da regra")
     void saidaAcimaDoSaldoDevolve400() throws Exception {
         mockMvc.perform(post("/api/movimentacoes/saida").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +91,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RN006: o ajuste sem justificativa suficiente devolve 400 com o detalhe do campo")
+    @DisplayName("o ajuste sem justificativa suficiente devolve 400 com o detalhe do campo")
     void ajusteSemJustificativaDevolve400() throws Exception {
         mockMvc.perform(post("/api/movimentacoes/ajuste").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "atendente@teste.com.br", roles = "ATENDENTE")
-    @DisplayName("RN007: o atendente consulta produtos sem enxergar o custo medio")
+    @DisplayName("o atendente consulta produtos sem enxergar o custo medio")
     void atendenteNaoRecebeCustoNaApi() throws Exception {
         mockMvc.perform(get("/api/produtos"))
                 .andExpect(status().isOk())
@@ -115,7 +115,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "atendente@teste.com.br", roles = "ATENDENTE")
-    @DisplayName("RN007: o atendente nao registra entrada e nao le a auditoria pela API")
+    @DisplayName("o atendente nao registra entrada e nao le a auditoria pela API")
     void atendenteEhBloqueadoNaApi() throws Exception {
         mockMvc.perform(post("/api/movimentacoes/entrada").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +130,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "proprietario@teste.com.br", roles = "PROPRIETARIO")
-    @DisplayName("RF12: o painel devolve indicadores, lista de reposicao e ultimas movimentacoes")
+    @DisplayName("o painel devolve indicadores, lista de reposicao e ultimas movimentacoes")
     void painelDevolveIndicadores() throws Exception {
         mockMvc.perform(get("/api/painel"))
                 .andExpect(status().isOk())
@@ -142,7 +142,7 @@ class ApiRestTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RF13: o extrato do produto e exposto pela API")
+    @DisplayName("o extrato do produto e exposto pela API")
     void extratoDisponivelNaApi() throws Exception {
         mockMvc.perform(post("/api/movimentacoes/entrada").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

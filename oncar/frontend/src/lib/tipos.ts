@@ -24,7 +24,7 @@ export type Produto = {
   saldo: string;
   estoqueMinimo: string;
   precoVenda: string;
-  /** Ausente para os perfis sem acesso financeiro (RN007). */
+  /** Ausente para os perfis sem acesso financeiro. */
   precoCusto: string | null;
   abaixoDoMinimo: boolean;
   ativo: boolean;
@@ -64,7 +64,7 @@ export type Fornecedor = { id: number; razaoSocial: string; cnpj: string; ativo:
 
 export type Cliente = { id: number; nome: string; documento: string; ativo: boolean };
 
-/** Perfis que enxergam custo, margem e operacoes de entrada/ajuste (RN007). */
+/** Perfis que enxergam custo, margem e operacoes de entrada/ajuste. */
 export const PERFIS_DE_ESTOQUE: Perfil[] = ["PROPRIETARIO", "GERENTE_ESTOQUE"];
 
 export function podeGerenciarEstoque(usuario: UsuarioSessao | null): boolean {

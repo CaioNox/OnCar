@@ -29,7 +29,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN003: a entrada soma ao saldo e o lancamento registra o saldo resultante")
+    @DisplayName("a entrada soma ao saldo e o lancamento registra o saldo resultante")
     void entradaAtualizaSaldo() {
         Movimentacao movimentacao = estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"),
                 new BigDecimal("20.00"), null, "NF-e 1", null, EMAIL_GERENTE);
@@ -42,7 +42,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN004: o custo medio ponderado e recalculado a cada entrada")
+    @DisplayName("o custo medio ponderado e recalculado a cada entrada")
     void entradaRecalculaCustoMedioPonderado() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);
@@ -55,7 +55,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN002: saida maior que o saldo e integralmente rejeitada")
+    @DisplayName("saida maior que o saldo e integralmente rejeitada")
     void saidaAcimaDoSaldoEhRejeitada() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);
@@ -71,7 +71,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN003: a saida subtrai do saldo no mesmo instante da confirmacao")
+    @DisplayName("a saida subtrai do saldo no mesmo instante da confirmacao")
     void saidaAtualizaSaldo() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);
@@ -83,7 +83,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN006: o ajuste exige justificativa com no minimo dez caracteres")
+    @DisplayName("o ajuste exige justificativa com no minimo dez caracteres")
     void ajusteExigeJustificativa() {
         assertThatThrownBy(() -> estoqueService.ajustarInventario(produto.getId(), new BigDecimal("3"),
                 "erro", null, EMAIL_GERENTE))
@@ -94,7 +94,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN006: o ajuste corrige o saldo e registra saldo anterior e apurado")
+    @DisplayName("o ajuste corrige o saldo e registra saldo anterior e apurado")
     void ajusteCorrigeSaldo() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);
@@ -111,7 +111,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN008: o estorno gera lancamento contrario e desfaz o efeito no saldo e no custo")
+    @DisplayName("o estorno gera lancamento contrario e desfaz o efeito no saldo e no custo")
     void estornoDesfazEntrada() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);
@@ -131,7 +131,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN008: uma movimentacao ja estornada nao pode ser estornada novamente")
+    @DisplayName("uma movimentacao ja estornada nao pode ser estornada novamente")
     void estornoDuplicadoEhRejeitado() {
         Movimentacao entrada = estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"),
                 new BigDecimal("20.00"), null, null, null, EMAIL_GERENTE);
@@ -144,7 +144,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN008: o estorno tambem exige justificativa")
+    @DisplayName("o estorno tambem exige justificativa")
     void estornoExigeJustificativa() {
         Movimentacao entrada = estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"),
                 new BigDecimal("20.00"), null, null, null, EMAIL_GERENTE);
@@ -155,7 +155,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN002: o estorno de entrada e recusado quando o saldo ja foi consumido")
+    @DisplayName("o estorno de entrada e recusado quando o saldo ja foi consumido")
     void estornoDeEntradaSemSaldoEhRejeitado() {
         Movimentacao entrada = estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"),
                 new BigDecimal("20.00"), null, null, null, EMAIL_GERENTE);
@@ -169,7 +169,7 @@ class EstoqueServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF13: o extrato lista as movimentacoes do produto")
+    @DisplayName("o extrato lista as movimentacoes do produto")
     void extratoListaMovimentacoesDoProduto() {
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("20.00"),
                 null, null, null, EMAIL_GERENTE);

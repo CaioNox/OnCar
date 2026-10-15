@@ -8,7 +8,7 @@ Esta entrega cobre o **nucleo do controle de estoque**: autenticacao e perfis, c
 de apoio, movimentacoes com saldo automatico, extrato, alerta de estoque minimo e auditoria.
 As demais funcionalidades previstas na documentacao estao listadas em *Proximas etapas*.
 
-## Tecnologias (RNF01, RNF02, RNF11 e RNF12)
+## Tecnologias
 
 | Camada | Tecnologia |
 | --- | --- |
@@ -70,65 +70,55 @@ export ONCAR_DB_PASSWORD=suasenha
 ./mvnw test
 ```
 
-## Requisitos implementados
+## Funcionalidades
 
-### Funcionais
-
-| Requisito | Onde |
+| Funcionalidade | Onde |
 | --- | --- |
-| RF01 Autenticar usuario | `SecurityConfig`, `DetalhesUsuarioService`, `templates/login.html` |
-| RF02 Manter usuarios | `UsuarioService`, `UsuarioController` |
-| RF03 Recuperar e alterar senha | `UsuarioService.alterarSenha` e `redefinirSenha`, `ContaController` |
-| RF04 Manter produtos | `ProdutoService`, `ProdutoController` |
-| RF05 Manter fornecedores | `FornecedorService`, `FornecedorController` |
-| RF06 Manter clientes e veiculos | `ClienteService`, `ClienteController` |
-| RF07 Pesquisar produtos | `ProdutoRepository.pesquisar`, tela `produto/lista` |
-| RF08 Registrar entrada | `EstoqueService.registrarEntrada` |
-| RF09 Registrar saida | `EstoqueService.registrarSaida` |
-| RF10 Atualizar saldo automaticamente | `EstoqueService` (todas as operacoes) |
-| RF11 Ajuste de inventario | `EstoqueService.ajustarInventario` |
-| RF12 Alertar estoque minimo | `ProdutoRepository.findAbaixoDoMinimo`, tela inicial e `/produtos/reposicao` |
-| RF13 Historico de movimentacoes (kardex) | `EstoqueService.listarExtrato`, tela `produto/extrato` |
-| RF20 Log de auditoria | `AuditoriaService`, tela `/auditoria` |
+| Autenticacao | `SecurityConfig`, `DetalhesUsuarioService`, `templates/login.html` |
+| Usuarios | `UsuarioService`, `UsuarioController` |
+| Troca e redefinicao de senha | `UsuarioService.alterarSenha` e `redefinirSenha`, `ContaController` |
+| Produtos | `ProdutoService`, `ProdutoController` |
+| Fornecedores | `FornecedorService`, `FornecedorController` |
+| Clientes e veiculos | `ClienteService`, `ClienteController` |
+| Pesquisa de produtos | `ProdutoRepository.pesquisar`, tela `produto/lista` |
+| Entrada e saida de mercadoria | `EstoqueService.registrarEntrada` e `registrarSaida` |
+| Ajuste de inventario | `EstoqueService.ajustarInventario` |
+| Alerta de estoque minimo | `ProdutoRepository.findAbaixoDoMinimo`, tela inicial e `/produtos/reposicao` |
+| Kardex por produto | `EstoqueService.listarExtrato`, tela `produto/extrato` |
+| Auditoria | `AuditoriaService`, tela `/auditoria` |
 
-### Regras de negocio
+## Regras de negocio
 
 | Regra | Onde |
 | --- | --- |
-| RN001 Unicidade do SKU (ignora caixa, espacos e inativos) | `ProdutoService.validarSkuUnico` |
-| RN002 Impedimento de saldo negativo | `EstoqueService.registrarSaida` |
-| RN003 Baixa e reposicao automaticas, em transacao unica | `EstoqueService` (`@Transactional`) |
-| RN004 Custo medio ponderado | `EstoqueService.calcularCustoMedioPonderado` |
-| RN005 Alerta de estoque minimo | `Produto.isAbaixoDoMinimo`, `ProdutoService.listarAbaixoDoMinimo` |
-| RN006 Justificativa obrigatoria no ajuste | `EstoqueService.ajustarInventario` |
-| RN007 Controle de acesso por perfil | `SecurityConfig`, `sec:authorize` nas telas |
-| RN008 Imutabilidade das movimentacoes e estorno | `EstoqueService.estornar` |
-| RN009 Inativacao em vez de exclusao | `inativar`/`excluir` de cada servico |
-| RN010 Preco de venda x custo medio | `ProdutoService.validarMargem` |
-| RN014 Politica de senhas e bloqueio de conta | `UsuarioService`, `SecurityConfig` |
-| RN015 Expiracao de sessao em 30 minutos | `application.properties`, `SecurityConfig` |
+| SKU unico (ignora caixa, espacos e inativos) | `ProdutoService.validarSkuUnico` |
+| Saldo nunca fica negativo | `EstoqueService.registrarSaida` |
+| Baixa e reposicao em transacao unica | `EstoqueService` (`@Transactional`) |
+| Custo medio ponderado | `EstoqueService.calcularCustoMedioPonderado` |
+| Alerta de estoque minimo | `Produto.isAbaixoDoMinimo`, `ProdutoService.listarAbaixoDoMinimo` |
+| Justificativa obrigatoria no ajuste | `EstoqueService.ajustarInventario` |
+| Controle de acesso por perfil | `SecurityConfig`, `sec:authorize` nas telas |
+| Movimentacoes imutaveis, corrigidas por estorno | `EstoqueService.estornar` |
+| Inativacao em vez de exclusao | `inativar`/`excluir` de cada servico |
+| Preco de venda abaixo do custo exige confirmacao | `ProdutoService.validarMargem` |
+| Politica de senhas e bloqueio de conta | `UsuarioService`, `SecurityConfig` |
+| Sessao expira apos 30 minutos | `application.properties`, `SecurityConfig` |
 
-### Nao-funcionais atendidos nesta entrega
+## Stack
 
-RNF01 (Java 17 + Spring Boot + Thymeleaf/Bootstrap), RNF02 (PostgreSQL com transacoes),
-RNF03 (layout responsivo do Bootstrap), RNF05 (Spring Security e BCrypt), RNF07 (operacoes
-diarias em ate tres cliques a partir do menu), RNF11 (Docker e Git), RNF12 (MVC em camadas),
-RNF13 (mensagens de erro em portugues e nao tecnicas) e RNF15 (testes automatizados das
-regras de negocio, executados via JUnit).
+Java 17, Spring Boot, Spring Security (BCrypt), Thymeleaf/Bootstrap, PostgreSQL em producao e H2
+em desenvolvimento, Docker e testes com JUnit.
 
 ## Observacoes de implementacao
 
-- **Autenticacao por sessao.** O RNF05 cita JWT; como a aplicacao e renderizada no servidor
-  com Thymeleaf, a autenticacao usa sessao do Spring Security (com expiracao de 30 minutos,
-  conforme a RN015). O JWT sera adotado quando a API REST for exposta para consumo externo.
-- **Envio de e-mail.** O RF03 preve redefinicao por link enviado por e-mail. Sem servidor SMTP
-  configurado, a redefinicao e feita pelo perfil Proprietario na tela de usuarios, e a troca
-  da propria senha fica em *Alterar senha*.
-- **Custo medio no estorno.** Ao estornar uma entrada, o custo medio e recalculado para o valor
-  anterior a compra. Quando o saldo remanescente e zero, o custo e mantido por nao ser apuravel.
+- **Autenticacao por sessao.** O front-end e o backend compartilham a mesma origem, entao a
+  autenticacao usa a sessao do Spring Security com CSRF e expiracao de 30 minutos.
+- **Redefinicao de senha.** Sem servidor SMTP configurado, a redefinicao e feita pelo perfil
+  Proprietario na tela de usuarios; a troca da propria senha fica em *Alterar senha*.
+- **Custo medio no estorno.** Ao estornar uma entrada, o custo medio volta ao valor anterior a
+  compra. Quando o saldo remanescente e zero, o custo e mantido por nao ser apuravel.
 
-## Proximas etapas
+## Roadmap
 
-RF14 (ordens de servico), RF15 (despesas), RF16 (relatorios mensais), RF17 (painel gerencial
-com graficos), RF18 (exportacao em PDF e Excel), RF19 (assistente de IA no chat interno) e as
-regras RN011, RN012 e RN013.
+Ordens de servico, despesas, relatorios mensais, painel gerencial com graficos, exportacao em PDF
+e Excel e assistente com IA.

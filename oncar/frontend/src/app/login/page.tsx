@@ -12,7 +12,7 @@ import { api, ErroDaApi } from "@/lib/api";
 import type { UsuarioSessao } from "@/lib/tipos";
 import { cn } from "@/lib/utils";
 
-/** RF01: autenticacao por e-mail e senha contra a API do OnCar. */
+/** autenticacao por e-mail e senha contra a API do OnCar. */
 export default function PaginaDeLogin() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -50,7 +50,7 @@ export default function PaginaDeLogin() {
         <div className="w-full max-w-[26rem] animate-in duration-700 ease-oficina fill-mode-both fade-in slide-in-from-bottom-4">
           <p className="rotulo flex items-center gap-2">
             <i aria-hidden="true" className="bi bi-car-front text-sm text-ok-texto" />
-            RF01 · Acesso à oficina
+            Acesso à oficina
           </p>
           <h1 className="fonte-display mt-3 text-display">OnCar</h1>
           <p className="mt-3 max-w-sm text-muted-foreground">
@@ -111,7 +111,7 @@ export default function PaginaDeLogin() {
           </form>
 
           <p className="num mt-6 text-center text-[0.6875rem] tracking-wide text-muted-foreground">
-            Sessão encerra após 30 min sem uso · RN015
+            Sessão encerra após 30 min sem uso
           </p>
         </div>
       </main>

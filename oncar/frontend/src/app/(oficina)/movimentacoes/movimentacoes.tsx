@@ -59,12 +59,12 @@ const TEXTOS: Record<Aba, { processando: string; concluido: string; conferindo: 
   entrada: {
     processando: "Registrando entrada…",
     concluido: "Entrada registrada",
-    conferindo: "Recalculando o custo médio (RN004)…",
+    conferindo: "Recalculando o custo médio…",
   },
   saida: {
     processando: "Dando baixa no estoque…",
     concluido: "Saída registrada",
-    conferindo: "Conferindo o saldo disponível (RN002)…",
+    conferindo: "Conferindo o saldo disponível…",
   },
   ajuste: {
     processando: "Registrando o ajuste…",
@@ -177,12 +177,12 @@ export function Movimentacoes({
   return (
     <section aria-labelledby="titulo-movimentacoes">
       <header className="mb-10 md:mb-14">
-        <p className="rotulo">RF08 · RF09 · RF11 · Estoque</p>
+        <p className="rotulo">Estoque</p>
         <h1 id="titulo-movimentacoes" className="fonte-display mt-3 text-display">
           Movimentações
         </h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Lançamentos confirmados não se editam nem se excluem (RN008). Para corrigir um lançamento,
+          Lançamentos confirmados não se editam nem se excluem. Para corrigir um lançamento,
           registre um estorno.
         </p>
       </header>
@@ -230,7 +230,7 @@ export function Movimentacoes({
                 <CurrencyTransfer
                   concluido={confirmacao.concluido}
                   titulo={TEXTOS[confirmacao.aba]}
-                  subtitulo={{ processando: "Atualizando o saldo (RF10)", concluido: confirmacao.resultado ?? "" }}
+                  subtitulo={{ processando: "Atualizando o saldo", concluido: confirmacao.resultado ?? "" }}
                   rodape={{ processando: TEXTOS[confirmacao.aba].conferindo, concluido: confirmacao.saldo ?? "" }}
                   de={confirmacao.de}
                   para={confirmacao.para}
@@ -338,7 +338,7 @@ function Dica({ children, tom }: { children: React.ReactNode; tom?: "atencao" })
   );
 }
 
-/** RF08: entrada de mercadoria, com custo unitario que alimenta a RN004. */
+/** entrada de mercadoria, com custo unitario que alimenta o custo medio. */
 function FormularioDeEntrada({
   produtos,
   fornecedores,
@@ -443,7 +443,7 @@ function FormularioDeEntrada({
   );
 }
 
-/** RF09: saida com motivo obrigatorio; o saldo negativo e barrado pela RN002. */
+/** saida com motivo obrigatorio; saldo negativo e barrado pelo backend. */
 function FormularioDeSaida({
   produtos,
   clientes,
@@ -532,7 +532,7 @@ function FormularioDeSaida({
                className={CAMPO} value={quantidade} onChange={(evento) => setQuantidade(evento.target.value)} />
         {excedeSaldo && (
           <p id="saida-excede" className="mt-1.5 text-xs text-atencao-texto">
-            Maior que o saldo: a API vai recusar (RN002).
+            A quantidade é maior que o saldo disponível.
           </p>
         )}
       </div>
@@ -572,7 +572,7 @@ function FormularioDeSaida({
   );
 }
 
-/** RF11 e RN006: ajuste apos contagem, com justificativa de no minimo dez caracteres. */
+/** ajuste apos contagem, com justificativa de no minimo dez caracteres. */
 function FormularioDeAjuste({ produtos, aoRegistrar }: { produtos: Produto[]; aoRegistrar: Registrar }) {
   const [produtoId, setProdutoId] = useState("");
   const [saldoApurado, setSaldoApurado] = useState("");
@@ -631,7 +631,7 @@ function FormularioDeAjuste({ produtos, aoRegistrar }: { produtos: Produto[]; ao
         )}
       </div>
       <div className="md:col-span-2">
-        <Rotulo htmlFor="ajuste-justificativa" dica="mínimo de 10 caracteres (RN006)">Justificativa</Rotulo>
+        <Rotulo htmlFor="ajuste-justificativa" dica="mínimo de 10 caracteres">Justificativa</Rotulo>
         <textarea id="ajuste-justificativa" required minLength={10} rows={2} className={AREA_DE_TEXTO}
                   value={justificativa} onChange={(evento) => setJustificativa(evento.target.value)}
                   placeholder="Descreva o motivo da divergência apurada na contagem" />
@@ -691,7 +691,7 @@ function Historico({
   return (
     <section aria-labelledby="titulo-historico" className="mt-16 md:mt-24">
       <div className="mb-5">
-        <p className="rotulo">RN008 · lançamentos imutáveis</p>
+        <p className="rotulo">Histórico protegido</p>
         <h2 id="titulo-historico" tabIndex={-1} className="fonte-display mt-2 text-2xl outline-none sm:text-3xl">
           Histórico recente
         </h2>
@@ -851,7 +851,7 @@ function LinhaDoHistorico({
   );
 }
 
-/** RN008: correcao por estorno, sempre com justificativa. */
+/** correcao por estorno, sempre com justificativa. */
 function LinhaDeEstorno({
   movimentacao,
   colunas,

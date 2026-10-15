@@ -1,6 +1,6 @@
 "use client";
 
-/** Mensagem de erro em portugues, no padrao da RNF13; sucesso vai por toast. */
+/** Mensagem de erro em portugues; sucesso vai por toast. */
 export function Erro({ mensagem, detalhes }: { mensagem: string | null; detalhes?: string[] }) {
   if (!mensagem) return null;
   return (

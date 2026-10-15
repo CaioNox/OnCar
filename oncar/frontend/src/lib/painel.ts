@@ -16,7 +16,7 @@ function doMaisRecente(movimentacoes: Movimentacao[]): Movimentacao[] {
  * Evolucao do capital em estoque ao longo das movimentacoes recentes, do mais
  * antigo ao atual. Parte do saldo de hoje e volta no tempo pelo saldo resultante
  * de cada lancamento; o custo usado e o medio atual, por isso e uma estimativa.
- * Sem acesso a custos (RN007) devolve lista vazia.
+ * Sem acesso a custos devolve lista vazia.
  */
 export function serieDoCapital(movimentacoes: Movimentacao[], produtos: Produto[]): number[] {
   if (!produtos.some((produto) => produto.precoCusto !== null)) return [];
@@ -77,7 +77,7 @@ export type Leitura = {
 
 /**
  * Tacometros com o que a API ja mede. As metas financeiras (faturamento x meta,
- * OS concluidas) entram aqui quando os modulos RF14 e RF16 existirem.
+ * OS concluidas) entram aqui quando os modulos de ordens de servico e relatorios existirem.
  */
 export function leiturasDoEstoque(painel: Painel, movimentacoes: Movimentacao[]): Leitura[] {
   const ativos = painel.produtosAtivos;

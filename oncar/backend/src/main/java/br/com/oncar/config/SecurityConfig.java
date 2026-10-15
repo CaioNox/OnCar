@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/webjars/**", "/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/sessao").permitAll()
-                        // RN007: as mesmas regras de perfil valem para as telas e para a API
+                        // as mesmas regras de perfil valem para as telas e para a API
                         .requestMatchers("/usuarios/**", "/auditoria/**", "/api/auditoria").hasRole(PROPRIETARIO)
                         .requestMatchers("/fornecedores/**").hasAnyRole(PROPRIETARIO, GERENTE)
                         .requestMatchers("/produtos/novo", "/produtos/*/editar", "/produtos/salvar",
@@ -109,7 +109,7 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll())
-                // RN015: sessao expirada devolve o usuario ao login com o motivo do encerramento
+                // sessao expirada devolve o usuario ao login com o motivo do encerramento
                 .sessionManagement(session -> session
                         .invalidSessionUrl("/login?expirada"))
                 .exceptionHandling(handling -> handling

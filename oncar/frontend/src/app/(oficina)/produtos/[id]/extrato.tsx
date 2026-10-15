@@ -17,7 +17,7 @@ export function ExtratoDoProduto({ id }: { id: string }) {
 
 type Carga = { id: string; produto: Produto; movimentacoes: Movimentacao[] } | { id: string; erro: ErroDaApi | null };
 
-/** RF13: extrato (kardex) de um produto, com a curva do saldo como ponto focal. */
+/** extrato (kardex) de um produto, com a curva do saldo como ponto focal. */
 function Conteudo({ id }: { id: string }) {
   const usuario = useUsuario();
   const exibeCusto = podeGerenciarEstoque(usuario);
@@ -151,7 +151,7 @@ function Conteudo({ id }: { id: string }) {
           <p className="rotulo">Ficha</p>
           <dl className="mt-5 grid gap-5">
             <Dado rotulo="Preço de venda" valor={formatarMoeda(produto.precoVenda)} />
-            {exibeCusto && <Dado rotulo="Custo médio · RN004" valor={formatarMoeda(produto.precoCusto)} />}
+            {exibeCusto && <Dado rotulo="Custo médio" valor={formatarMoeda(produto.precoCusto)} />}
             {exibeCusto && valorEmEstoque !== null && (
               <Dado rotulo="Valor em estoque" valor={formatarMoeda(valorEmEstoque)} />
             )}
@@ -169,7 +169,7 @@ function Conteudo({ id }: { id: string }) {
 
       <section aria-labelledby="titulo-kardex" className="mt-16 md:mt-24">
         <div className="mb-5">
-          <p className="rotulo">RF13 · Kardex</p>
+          <p className="rotulo">Kardex</p>
           <h2 id="titulo-kardex" className="fonte-display mt-2 text-2xl sm:text-3xl">
             Extrato de movimentações
           </h2>

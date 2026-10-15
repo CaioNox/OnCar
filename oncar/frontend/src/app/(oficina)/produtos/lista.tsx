@@ -36,7 +36,7 @@ function visaoInicial(): Visao {
   return window.matchMedia("(max-width: 639px)").matches ? "cartoes" : "tabela";
 }
 
-/** RF07: busca por descricao, SKU, marca ou fornecedor, exibindo saldo e preco. */
+/** busca por descricao, SKU, marca ou fornecedor, exibindo saldo e preco. */
 export function ListaDeProdutos({ nivelInicial }: { nivelInicial: Nivel | null }) {
   const usuario = useUsuario();
   const exibeCusto = podeGerenciarEstoque(usuario);
@@ -113,7 +113,7 @@ export function ListaDeProdutos({ nivelInicial }: { nivelInicial: Nivel | null }
     <section aria-labelledby="titulo-produtos">
       <header className="mb-10 flex flex-col gap-6 md:mb-14 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="rotulo">RF07 · Estoque</p>
+          <p className="rotulo">Estoque</p>
           <h1 id="titulo-produtos" className="fonte-display mt-3 text-display">
             Produtos
           </h1>

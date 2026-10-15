@@ -1,6 +1,6 @@
 import { ExtratoDoProduto } from "./extrato";
 
-/** RF13: extrato (kardex) de um produto. */
+/** extrato (kardex) de um produto. */
 export default async function PaginaDoProduto({
   params,
 }: {

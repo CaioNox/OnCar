@@ -1,4 +1,4 @@
-# RNF11: imagem da aplicacao, construida em duas etapas para nao levar o Maven ao runtime.
+# Imagem da aplicacao, construida em duas etapas para nao levar o Maven ao runtime.
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 COPY .mvn ./.mvn

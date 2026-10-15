@@ -26,7 +26,7 @@
             <input class="form-control" type="password" id="novaSenha" th:field="*{novaSenha}">
             <div class="text-danger small" th:if="${#fields.hasErrors('novaSenha')}" th:errors="*{novaSenha}"></div>
             <div class="form-text">Minimo de 8 caracteres, com ao menos uma letra e um numero. Nao pode repetir
-                as tres ultimas senhas utilizadas (RN014).</div>
+                as tres ultimas senhas utilizadas.</div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="confirmacao">Confirme a nova senha</label>

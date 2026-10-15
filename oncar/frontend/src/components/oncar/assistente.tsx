@@ -38,7 +38,7 @@ export function Assistente({ aberto, aoFechar }: { aberto: boolean; aoFechar: ()
     try {
       resposta = await responder(texto, produtos);
     } catch {
-      resposta = { texto: "Não consegui consultar a API agora. Tente de novo em instantes." };
+      resposta = { texto: "Não consegui consultar o estoque agora. Tente de novo em instantes." };
     }
     const espera = PENSAMENTO_MINIMO_MS - (performance.now() - inicio);
     if (espera > 0) await new Promise((resolver) => setTimeout(resolver, espera));
@@ -85,7 +85,7 @@ function Conversa({
     <div className="flex h-full flex-col">
       <header className="flex items-start justify-between gap-4 border-b px-5 pt-5 pb-4">
         <div>
-          <p className="rotulo">RF19 · prévia local</p>
+          <p className="rotulo">Assistente</p>
           <h2 className="fonte-display mt-1 text-2xl">Assistente da oficina</h2>
         </div>
         <button
@@ -169,8 +169,7 @@ function Conversa({
           onSubmit={aoPerguntar}
         />
         <p className="mt-2.5 text-[0.6875rem] leading-relaxed text-muted-foreground">
-          As respostas vêm dos endpoints de estoque. O assistente com IA (RF19) ainda não tem
-          endpoint no back-end.
+          As respostas usam os dados atuais do seu estoque.
         </p>
       </div>
     </div>

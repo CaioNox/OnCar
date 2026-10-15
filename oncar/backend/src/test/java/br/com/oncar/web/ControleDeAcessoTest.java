@@ -20,7 +20,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("RF01: usuario nao autenticado e enviado para a tela de login")
+    @DisplayName("usuario nao autenticado e enviado para a tela de login")
     void visitanteEhRedirecionadoParaLogin() throws Exception {
         mockMvc.perform(get("/produtos"))
                 .andExpect(status().is3xxRedirection())
@@ -29,7 +29,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "atendente@teste.com.br", roles = "ATENDENTE")
-    @DisplayName("RN007: o atendente nao acessa o cadastro de fornecedores")
+    @DisplayName("o atendente nao acessa o cadastro de fornecedores")
     void atendenteNaoAcessaFornecedores() throws Exception {
         mockMvc.perform(get("/fornecedores"))
                 .andExpect(status().is3xxRedirection())
@@ -38,7 +38,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "atendente@teste.com.br", roles = "ATENDENTE")
-    @DisplayName("RN007: o atendente nao registra entrada de mercadoria")
+    @DisplayName("o atendente nao registra entrada de mercadoria")
     void atendenteNaoRegistraEntrada() throws Exception {
         mockMvc.perform(get("/movimentacoes/entrada"))
                 .andExpect(status().is3xxRedirection())
@@ -47,7 +47,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "mecanico@teste.com.br", roles = "MECANICO")
-    @DisplayName("RN007: o mecanico apenas consulta, sem registrar saidas")
+    @DisplayName("o mecanico apenas consulta, sem registrar saidas")
     void mecanicoApenasConsulta() throws Exception {
         mockMvc.perform(get("/produtos"))
                 .andExpect(status().isOk());
@@ -58,7 +58,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RN007: o gerente de estoque nao administra usuarios nem a auditoria")
+    @DisplayName("o gerente de estoque nao administra usuarios nem a auditoria")
     void gerenteNaoAdministraUsuarios() throws Exception {
         mockMvc.perform(get("/usuarios"))
                 .andExpect(status().is3xxRedirection())
@@ -70,7 +70,7 @@ class ControleDeAcessoTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "proprietario@teste.com.br", roles = "PROPRIETARIO")
-    @DisplayName("RN007: o proprietario tem acesso integral")
+    @DisplayName("o proprietario tem acesso integral")
     void proprietarioAcessaTodasAsTelas() throws Exception {
         mockMvc.perform(get("/")).andExpect(status().isOk());
         mockMvc.perform(get("/usuarios")).andExpect(status().isOk());

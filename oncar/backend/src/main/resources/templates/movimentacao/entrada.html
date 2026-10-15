@@ -14,8 +14,7 @@
     <div th:replace="~{layout/base :: mensagens}"></div>
 
     <h1 class="h4 mb-3">Registrar entrada de mercadoria</h1>
-    <p class="text-muted small">O saldo e o custo medio ponderado do produto sao atualizados automaticamente
-        (RF10 e RN004).</p>
+    <p class="text-muted small">O saldo e o custo medio ponderado do produto sao atualizados automaticamente.</p>
 
     <form class="card card-body" method="post" th:action="@{/movimentacoes/entrada}" th:object="${entradaForm}">
         <div class="row g-3">

@@ -63,7 +63,7 @@
             <div class="col-md-3">
                 <label class="form-label">Custo medio ponderado (R$)</label>
                 <input class="form-control" type="text" th:value="*{precoCusto}" readonly>
-                <div class="form-text">Calculado automaticamente a cada entrada (RN004).</div>
+                <div class="form-text">Calculado automaticamente a cada entrada.</div>
             </div>
             <div class="col-md-3">
                 <label class="form-label" for="estoqueMinimo">Estoque minimo</label>
@@ -74,7 +74,7 @@
             <div class="col-md-3">
                 <label class="form-label">Saldo atual</label>
                 <input class="form-control" type="text" th:value="*{saldo}" readonly>
-                <div class="form-text">Atualizado apenas por movimentacoes (RN003).</div>
+                <div class="form-text">Atualizado apenas por movimentacoes.</div>
             </div>
 
             <div class="col-md-4">
@@ -90,7 +90,7 @@
                 </select>
             </div>
             <div class="col-md-3 d-flex align-items-end">
-                <!-- RN010: preco abaixo do custo medio exige confirmacao explicita -->
+                <!-- preco abaixo do custo medio exige confirmacao explicita -->
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="confirmaMargemNegativa"
                            name="confirmaMargemNegativa" value="true">

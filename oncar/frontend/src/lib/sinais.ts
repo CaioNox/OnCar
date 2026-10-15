@@ -1,7 +1,7 @@
 /**
  * Sinais da oficina para o GarageWallpaper, derivados dos dados que a API ja expoe.
  *
- * A API ainda nao tem ordens de servico (RF14) nem financeiro (RF15/RF16), entao
+ * A API ainda nao tem ordens de servico nem financeiro, entao
  * dois sinais sao aproximacoes documentadas; quando esses modulos existirem,
  * basta trocar o calculo aqui e o wallpaper continua igual.
  */
@@ -31,7 +31,7 @@ export function dataLocal(data: Date): string {
 }
 
 /**
- * Aproximacao de "OS abertas" enquanto o RF14 nao existe: ordens de servico
+ * Aproximacao de "OS abertas" enquanto o modulo de ordens de servico nao existe: ordens de servico
  * distintas que receberam pecas hoje (saidas por OS, agrupadas pelo documento).
  */
 export function osComPecasHoje(movimentacoes: Movimentacao[], hoje: string): number {
@@ -52,7 +52,7 @@ export function osComPecasHoje(movimentacoes: Movimentacao[], hoje: string): num
 /**
  * Aproximacao do saldo enquanto o financeiro nao existe: fluxo das movimentacoes
  * recentes (a API devolve as 50 ultimas). Vendas e OS entram pelo preco de venda;
- * compras e perdas saem pelo custo medio atual. Sem acesso a custos (RN007) nao
+ * compras e perdas saem pelo custo medio atual. Sem acesso a custos nao
  * ha como estimar, e o wallpaper fica no tom neutro.
  */
 export function fluxoEstimado(movimentacoes: Movimentacao[], produtos: Produto[]): number | undefined {

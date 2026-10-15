@@ -4,7 +4,7 @@ import type { Movimentacao, Produto } from "@/lib/tipos";
 export type Nivel = "ok" | "atencao" | "critico";
 
 /**
- * Nivel do estoque: critico no minimo ou abaixo (RN005), atencao ate 50% acima
+ * Nivel do estoque: critico no minimo ou abaixo, atencao ate 50% acima
  * do minimo, ok dali para cima.
  */
 export function nivelDoEstoque(produto: Pick<Produto, "saldo" | "estoqueMinimo" | "abaixoDoMinimo">): Nivel {

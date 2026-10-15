@@ -21,7 +21,7 @@ class AuditoriaServiceTest extends TesteIntegracao {
     private AuditoriaService auditoriaService;
 
     @Test
-    @DisplayName("RF20: cadastro e movimentacao geram registros identificando usuario e registro afetado")
+    @DisplayName("cadastro e movimentacao geram registros identificando usuario e registro afetado")
     void operacoesGeramLogDeAuditoria() {
         criarGerente();
         Produto produto = criarProduto("FL-950", new BigDecimal("2"));

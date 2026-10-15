@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class UsuarioServiceTest extends TesteIntegracao {
 
     @Test
-    @DisplayName("RN014: senha curta ou sem numero e recusada")
+    @DisplayName("senha curta ou sem numero e recusada")
     void senhaForaDaPoliticaEhRecusada() {
         Usuario usuario = new Usuario();
         usuario.setNome("Novo Usuario");
@@ -30,7 +30,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN014: a senha e armazenada apenas como hash BCrypt")
+    @DisplayName("a senha e armazenada apenas como hash BCrypt")
     void senhaEhArmazenadaComoHash() {
         Usuario gerente = criarGerente();
 
@@ -38,7 +38,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN014: a nova senha nao pode repetir as tres ultimas utilizadas")
+    @DisplayName("a nova senha nao pode repetir as tres ultimas utilizadas")
     void novaSenhaNaoPodeRepetirAsTresUltimas() {
         criarGerente();
         usuarioService.alterarSenha(EMAIL_GERENTE, "oncar2026", "oficina2026", "oficina2026");
@@ -51,7 +51,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF03: a troca de senha exige a senha atual correta e a confirmacao")
+    @DisplayName("a troca de senha exige a senha atual correta e a confirmacao")
     void trocaDeSenhaValidaSenhaAtualEConfirmacao() {
         criarGerente();
 
@@ -67,7 +67,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN014: cinco tentativas malsucedidas bloqueiam a conta por 15 minutos")
+    @DisplayName("cinco tentativas malsucedidas bloqueiam a conta por 15 minutos")
     void cincoTentativasBloqueiamAConta() {
         criarGerente();
 
@@ -84,7 +84,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN014: o login com sucesso zera as tentativas acumuladas")
+    @DisplayName("o login com sucesso zera as tentativas acumuladas")
     void loginComSucessoZeraTentativas() {
         criarGerente();
         usuarioService.registrarFalhaDeLogin(EMAIL_GERENTE);
@@ -96,7 +96,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF02: o e-mail do usuario nao pode se repetir")
+    @DisplayName("o e-mail do usuario nao pode se repetir")
     void emailDuplicadoEhRecusado() {
         criarGerente();
 
@@ -111,7 +111,7 @@ class UsuarioServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN009: a inativacao preserva o cadastro do usuario")
+    @DisplayName("a inativacao preserva o cadastro do usuario")
     void inativacaoPreservaCadastro() {
         Usuario gerente = criarGerente();
 

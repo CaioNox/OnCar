@@ -27,7 +27,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN001: o SKU e unico desconsiderando caixa e espacos nas extremidades")
+    @DisplayName("o SKU e unico desconsiderando caixa e espacos nas extremidades")
     void skuDuplicadoEhRejeitado() {
         criarProduto("FL-100", new BigDecimal("2"));
 
@@ -45,7 +45,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN001: a unicidade do SKU alcanca tambem os produtos inativos")
+    @DisplayName("a unicidade do SKU alcanca tambem os produtos inativos")
     void skuDeProdutoInativoContinuaReservado() {
         Produto produto = criarProduto("FL-200", new BigDecimal("2"));
         produtoService.inativar(produto.getId());
@@ -64,7 +64,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN003: o saldo inicial de um produto novo e sempre zero")
+    @DisplayName("o saldo inicial de um produto novo e sempre zero")
     void produtoNovoNasceComSaldoZero() {
         Produto produto = criarProduto("FL-300", new BigDecimal("2"));
 
@@ -72,7 +72,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN005: o produto entra na lista de reposicao ao atingir o estoque minimo")
+    @DisplayName("o produto entra na lista de reposicao ao atingir o estoque minimo")
     void produtoAbaixoDoMinimoEntraNaListaDeReposicao() {
         Produto produto = criarProduto("FL-400", new BigDecimal("5"));
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("10.00"),
@@ -89,7 +89,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN005: o alerta sai da lista assim que uma entrada eleva o saldo")
+    @DisplayName("o alerta sai da lista assim que uma entrada eleva o saldo")
     void entradaRetiraProdutoDaListaDeReposicao() {
         Produto produto = criarProduto("FL-450", new BigDecimal("5"));
         assertThat(produtoService.listarAbaixoDoMinimo()).hasSize(1);
@@ -101,7 +101,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN009: produto com movimentacao nao pode ser excluido, apenas inativado")
+    @DisplayName("produto com movimentacao nao pode ser excluido, apenas inativado")
     void produtoComMovimentacaoNaoPodeSerExcluido() {
         Produto produto = criarProduto("FL-500", new BigDecimal("2"));
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("3"), new BigDecimal("10.00"),
@@ -116,7 +116,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RN009: produto sem historico pode ser excluido")
+    @DisplayName("produto sem historico pode ser excluido")
     void produtoSemHistoricoPodeSerExcluido() {
         Produto produto = criarProduto("FL-600", new BigDecimal("2"));
 
@@ -127,7 +127,7 @@ class ProdutoServiceTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "gerente@teste.com.br", roles = "GERENTE_ESTOQUE")
-    @DisplayName("RN010: preco abaixo do custo medio exige confirmacao explicita do gerente")
+    @DisplayName("preco abaixo do custo medio exige confirmacao explicita do gerente")
     void precoAbaixoDoCustoExigeConfirmacao() {
         Produto produto = criarProduto("FL-700", new BigDecimal("2"));
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("50.00"),
@@ -145,7 +145,7 @@ class ProdutoServiceTest extends TesteIntegracao {
 
     @Test
     @WithMockUser(username = "atendente@teste.com.br", roles = "ATENDENTE")
-    @DisplayName("RN010: o atendente nao pode gravar preco de venda abaixo do custo medio")
+    @DisplayName("o atendente nao pode gravar preco de venda abaixo do custo medio")
     void atendenteNaoConfirmaMargemNegativa() {
         Produto produto = criarProduto("FL-800", new BigDecimal("2"));
         estoqueService.registrarEntrada(produto.getId(), new BigDecimal("10"), new BigDecimal("50.00"),
@@ -159,7 +159,7 @@ class ProdutoServiceTest extends TesteIntegracao {
     }
 
     @Test
-    @DisplayName("RF07: a pesquisa localiza o produto por descricao, SKU ou marca")
+    @DisplayName("a pesquisa localiza o produto por descricao, SKU ou marca")
     void pesquisaLocalizaProduto() {
         criarProduto("FL-900", new BigDecimal("2"));
 

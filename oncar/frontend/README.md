@@ -52,13 +52,13 @@ marinho dá 2,35:1, por isso só aparece como preenchimento, com texto osso por 
 
 O shell (`src/components/oncar/app-shell.tsx`) carrega `/painel`, `/movimentacoes` e `/produtos`
 a cada navegação e após cada lançamento. Não há polling, porque requisições periódicas
-impediriam a sessão de expirar por inatividade (RN015). O cálculo fica em `src/lib/sinais.ts`.
+impediriam a sessão de expirar por inatividade. O cálculo fica em `src/lib/sinais.ts`.
 
 | Prop | Origem hoje | Quando a API evoluir |
 | --- | --- | --- |
 | `estoqueCritico` | `painel.itensAbaixoDoMinimo` (real) | já é o dado final |
-| `osAbertas` | aproximação: OS distintas que receberam peças hoje (saídas por "Aplicação em ordem de serviço") | trocar pelo total de OS abertas do RF14 |
-| `saldo` | aproximação: fluxo das 50 movimentações recentes (vendas e OS pelo preço de venda, menos compras e perdas pelo custo médio). Sem acesso a custos (RN007), fica neutro | trocar pelo saldo do financeiro (RF15/RF16) |
+| `osAbertas` | aproximação: OS distintas que receberam peças hoje (saídas por "Aplicação em ordem de serviço") | trocar pelo total de OS abertas do módulo de ordens de serviço |
+| `saldo` | aproximação: fluxo das 50 movimentações recentes (vendas e OS pelo preço de venda, menos compras e perdas pelo custo médio). Sem acesso a custos, fica neutro | trocar pelo saldo do financeiro |
 
 ## Componentes KokonutUI
 
@@ -92,8 +92,8 @@ Ficaram sem uso depois do redesign e podem ser removidos: `anthropic*`, `open-ai
 | `/movimentacoes` | Bancada com abas, confirmação animada, histórico filtrável e estorno inline; aceita `?aba=`, `?cliente=` e `?documento=` |
 | `/demo` | Bancada de testes do wallpaper |
 
-A API ainda não expõe **ordens de serviço (RF14), financeiro e relatórios (RF15/RF16), veículos
-e o assistente de IA (RF19)**. Enquanto isso:
+A API ainda não expõe **ordens de serviço, financeiro e relatórios, veículos
+e o assistente de IA**. Enquanto isso:
 - os tacômetros mostram leituras reais de estoque (acima do mínimo, sem ruptura, sem estorno);
 - a busca avisa que placas ainda não têm endpoint;
 - o assistente responde localmente com os endpoints de estoque (`src/lib/assistente.ts`),

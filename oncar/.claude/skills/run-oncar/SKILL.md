@@ -27,7 +27,7 @@ cd frontend && npx next dev > "$TEMP/oncar-fe.log" 2>&1 &
 timeout 120 bash -c 'until curl -sf localhost:3000/login -o /dev/null; do sleep 2; done'
 ```
 
-Demo logins all use the password `oncar2026`: `proprietario@`, `gerente@`, `atendente@` and `mecanico@oncar.com.br`. Use `atendente` to check RN007, where costs are hidden.
+Demo logins all use the password `oncar2026`: `proprietario@`, `gerente@`, `atendente@` and `mecanico@oncar.com.br`. Use `atendente` to check that costs are hidden for that role.
 
 ## Drive (agent path)
 

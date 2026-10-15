@@ -48,7 +48,7 @@ const SEM_DADOS: Dados = { painel: null, movimentacoes: [], produtos: [], sinais
 
 /**
  * Moldura das telas autenticadas: carrega a sessao, envia o visitante ao login
- * quando a API responde 401 (RN015), monta o menu conforme o perfil (RN007) e
+ * quando a API responde 401, monta o menu conforme o perfil e
  * alimenta o wallpaper com o estado da oficina.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return promessa;
   }, [router]);
 
-  // Dados frescos a cada navegacao. Nada de polling: a sessao expira por inatividade (RN015).
+  // Dados frescos a cada navegacao. Nada de polling: a sessao expira por inatividade.
   useEffect(() => {
     if (usuario) void recarregar();
   }, [usuario, caminho, recarregar]);
@@ -152,8 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <i aria-hidden="true" className="bi bi-plug text-3xl text-muted-foreground" />
           <h1 className="fonte-display mt-4 text-3xl">Sem conexão com a oficina</h1>
           <p className="mt-3 text-muted-foreground">
-            Não foi possível falar com o servidor do OnCar. Confira se o back-end está no ar e
-            tente de novo.
+            Não foi possível falar com o servidor do OnCar. Verifique sua conexão e tente de novo.
           </p>
           <button
             type="button"
