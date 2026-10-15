@@ -4,41 +4,101 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * OnCar - "Oficina Noturna"
+ * Paleta 60/30/10: marinho (base), musgo (apoio) e carmesim (sinal).
+ * O carmesim so aparece em alerta, acao critica e estoque baixo - nunca como
+ * enfeite, e nunca em texto pequeno sobre o marinho (contraste de 2,35:1).
+ */
+@theme {
+  /* Paleta fixa: vale nos dois temas e gera utilitarios como bg-musgo e text-osso */
+  --color-marinho: #131c2e;
+  --color-marinho-superficie: #1b2740;
+  --color-marinho-profundo: #0b111d;
+  --color-marinho-frio: #3d5a80;
+  --color-musgo: #4f5f3a;
+  --color-musgo-claro: #6b7d4e;
+  --color-liquen: #a7b98a;
+  --color-carmesim: #a3263a;
+  --color-carmesim-claro: #e27a8a;
+  --color-ambar: #d9a441;
+  --color-ambar-escuro: #8a5a12;
+  --color-osso: #e9e4d8;
+  --color-grafite: #8a93a3;
+  --color-papel: #efeae0;
+
+  /* Escala: titulo de 44 a 72px contra corpo de 15px */
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.6;
+  --text-display: clamp(2.75rem, 1.6rem + 3.6vw, 4.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.025em;
+  --text-kpi: clamp(3rem, 1.9rem + 3.4vw, 5.25rem);
+  --text-kpi--line-height: 0.95;
+  --text-kpi--letter-spacing: -0.03em;
+
+  --ease-oficina: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-esqueleto: esqueleto 1.6s var(--ease-oficina) infinite;
+
+  @keyframes esqueleto {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: -100% 0;
+    }
+  }
+}
+
 @theme inline {
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* Tokens semanticos: trocam entre o tema Noturna (.dark) e o Papel (:root) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-vidro: var(--vidro);
+  --color-ok: var(--ok);
+  --color-ok-texto: var(--ok-texto);
+  --color-atencao: var(--atencao);
+  --color-atencao-texto: var(--atencao-texto);
+  --color-sinal: var(--sinal);
+  --color-sinal-texto: var(--sinal-texto);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -48,83 +108,302 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Tema claro "Papel": textos em marinho, mesmos acentos. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.75rem;
+
+  --background: #efeae0;
+  --foreground: #131c2e;
+  --card: #f7f3eb;
+  --card-foreground: #131c2e;
+  --popover: #fbf8f2;
+  --popover-foreground: #131c2e;
+  --primary: #4f5f3a;
+  --primary-foreground: #efeae0;
+  --secondary: #e4ded1;
+  --secondary-foreground: #131c2e;
+  --muted: #e6e0d4;
+  --muted-foreground: #525c6e;
+  --accent: rgb(79 95 58 / 0.12);
+  --accent-foreground: #131c2e;
+  --destructive: #a3263a;
+  --border: rgb(19 28 46 / 0.12);
+  --input: rgb(19 28 46 / 0.2);
+  --ring: #4f5f3a;
+
+  --vidro: rgb(247 243 235 / 0.62);
+  --ok: #4f5f3a;
+  --ok-texto: #4f5f3a;
+  --atencao: #c28a2c;
+  --atencao-texto: #8a5a12;
+  --sinal: #a3263a;
+  --sinal-texto: #a3263a;
+
+  /* Wallpaper: linhas, grade da planta tecnica e veu do modo foco */
+  --wallpaper-base: #efeae0;
+  --wallpaper-grade: rgb(79 95 58 / 0.22);
+  --wallpaper-grade-fina: rgb(79 95 58 / 0.1);
+  --wallpaper-halo: rgb(79 95 58 / 0.1);
+  --wallpaper-veu: #efeae0;
+  --wallpaper-grao: 0.045;
+
+  --chart-1: #4f5f3a;
+  --chart-2: #6b7d4e;
+  --chart-3: #8a5a12;
+  --chart-4: #3d5a80;
+  --chart-5: #a3263a;
+  --sidebar: #f7f3eb;
+  --sidebar-foreground: #131c2e;
+  --sidebar-primary: #4f5f3a;
+  --sidebar-primary-foreground: #efeae0;
+  --sidebar-accent: rgb(79 95 58 / 0.12);
+  --sidebar-accent-foreground: #131c2e;
+  --sidebar-border: rgb(19 28 46 / 0.12);
+  --sidebar-ring: #4f5f3a;
 }
 
+/* Tema padrao "Oficina Noturna" */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #131c2e;
+  --foreground: #e9e4d8;
+  --card: #1b2740;
+  --card-foreground: #e9e4d8;
+  --popover: #1e2b47;
+  --popover-foreground: #e9e4d8;
+  /* Musgo escuro no preenchimento: texto osso fica em 5,5:1 */
+  --primary: #4f5f3a;
+  --primary-foreground: #e9e4d8;
+  --secondary: #22304d;
+  --secondary-foreground: #e9e4d8;
+  --muted: #1b2740;
+  --muted-foreground: #8a93a3;
+  --accent: rgb(107 125 78 / 0.16);
+  --accent-foreground: #e9e4d8;
+  --destructive: #a3263a;
+  --border: rgb(233 228 216 / 0.09);
+  --input: rgb(233 228 216 / 0.16);
+  --ring: #6b7d4e;
+
+  --vidro: rgb(27 39 64 / 0.55);
+  --ok: #6b7d4e;
+  --ok-texto: #a7b98a;
+  --atencao: #d9a441;
+  --atencao-texto: #d9a441;
+  --sinal: #a3263a;
+  --sinal-texto: #e27a8a;
+
+  --wallpaper-base: #131c2e;
+  --wallpaper-grade: rgb(107 125 78 / 0.32);
+  --wallpaper-grade-fina: rgb(107 125 78 / 0.14);
+  --wallpaper-halo: rgb(107 125 78 / 0.12);
+  --wallpaper-veu: #05080f;
+  --wallpaper-grao: 0.03;
+
+  --chart-1: #6b7d4e;
+  --chart-2: #a7b98a;
+  --chart-3: #d9a441;
+  --chart-4: #3d5a80;
+  --chart-5: #a3263a;
+  --sidebar: #1b2740;
+  --sidebar-foreground: #e9e4d8;
+  --sidebar-primary: #4f5f3a;
+  --sidebar-primary-foreground: #e9e4d8;
+  --sidebar-accent: rgb(107 125 78 / 0.16);
+  --sidebar-accent-foreground: #e9e4d8;
+  --sidebar-border: rgb(233 228 216 / 0.09);
+  --sidebar-ring: #6b7d4e;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
+  html {
+    font-family: var(--font-sans);
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    font-feature-settings: "ss01", "cv11";
   }
-  html {
-    @apply font-sans;
+
+  /* Foco visivel: contorno musgo de 2px em tudo que recebe teclado */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: rgb(107 125 78 / 0.45);
+    color: var(--foreground);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :where(input, select, textarea)::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.8;
+  }
+
+  /* Controle deslizante no tema: trilho grafite, preenchimento musgo (--preenchido) */
+  input[type="range"] {
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--ring) var(--preenchido, 50%),
+      color-mix(in oklab, var(--foreground) 14%, transparent) var(--preenchido, 50%)
+    );
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--foreground);
+    border: 3px solid var(--ring);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--foreground);
+    border: 3px solid var(--ring);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Numeros, codigos de peca e placas: mono com algarismos tabulares */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "zero" 1;
+}
+
+/* Titulos e numeros grandes: Fraunces com corte optico de display e serifa suave */
+@utility fonte-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 60;
+  font-weight: 400;
+}
+
+/* Rotulo tecnico: caixa alta espacada, como anotacao de planta */
+@utility rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Superficie de vidro: deixa o wallpaper vazar por tras */
+@utility vidro {
+  background-color: var(--vidro);
+  /* So a propriedade padrao: o Lightning CSS prefixa sozinho; declarar as duas o fazia descartar esta. */
+  backdrop-filter: blur(14px) saturate(1.15);
+}
+
+@utility esqueleto {
+  background-image: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in oklab, var(--muted), var(--foreground) 7%) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-esqueleto);
+  border-radius: var(--radius-md);
+}
+
+@layer components {
+  /*
+   * Tabela densa de estoque: zebrada sutil, cabecalho fixo e numeros alinhados.
+   * O cabecalho gruda dentro de .tabela-rolagem, que rola nos dois eixos.
+   */
+  .tabela-rolagem {
+    overflow: auto;
+    max-height: min(72vh, 46rem);
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--foreground) 22%, transparent) transparent;
+  }
+
+  .tabela {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .tabela thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    background: color-mix(in oklab, var(--card) 94%, var(--foreground));
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tabela tbody td {
+    padding: 0.5625rem 0.875rem;
+    vertical-align: middle;
+    border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  }
+
+  .tabela tbody tr:nth-child(even) {
+    background: color-mix(in oklab, var(--foreground) 2.5%, transparent);
+  }
+
+  .tabela tbody tr {
+    transition: background-color 160ms var(--ease-oficina);
+  }
+
+  .tabela tbody tr:hover {
+    background: var(--accent);
+  }
+
+  .tabela tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .tabela :is(th, td).direita {
+    text-align: right;
   }
 }

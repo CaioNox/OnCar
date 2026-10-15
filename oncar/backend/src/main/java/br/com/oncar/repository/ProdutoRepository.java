@@ -29,7 +29,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     @Query("""
             select p from Produto p
-            left join p.fornecedorPadrao f
+            left join fetch p.fornecedorPadrao f
             where (:termo is null
                    or lower(p.descricao) like lower(concat('%', :termo, '%'))
                    or lower(p.sku) like lower(concat('%', :termo, '%'))

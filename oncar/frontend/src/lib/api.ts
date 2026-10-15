@@ -96,6 +96,12 @@ export function formatarNumero(valor: string | number | null, casas = 2): string
   }).format(Number(valor));
 }
 
+/** Quantidades sem zeros sobrando: 5 vira "5", 2.5 vira "2,5" (ate tres casas). */
+export function formatarQuantidade(valor: string | number | null): string {
+  if (valor === null || valor === undefined) return "-";
+  return new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 3 }).format(Number(valor));
+}
+
 export function formatarMoeda(valor: string | number | null): string {
   if (valor === null || valor === undefined) return "-";
   return new Intl.NumberFormat("pt-BR", {

@@ -1,0 +1,149 @@
+/*
+ * GarageWallpaper - planta tecnica + chicote eletrico.
+ * Camadas, de baixo para cima: vinheta, halo e grade (lanterna), linhas,
+ * faiscas, linha de alerta, grao e o veu do modo foco.
+ */
+
+.raiz {
+  --wallpaper-quente: var(--color-musgo-claro);
+  --wallpaper-frio: var(--color-marinho-frio);
+  --wallpaper-faisca: var(--color-liquen);
+
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--wallpaper-base);
+  contain: strict;
+}
+
+:global(html:not(.dark)) .raiz {
+  --wallpaper-quente: var(--color-musgo);
+  --wallpaper-frio: var(--color-marinho-frio);
+  --wallpaper-faisca: var(--color-musgo);
+}
+
+.vinheta {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% -12%, color-mix(in oklab, var(--color-musgo-claro) 13%, transparent), transparent 62%),
+    radial-gradient(95% 65% at 50% 118%, rgb(0 0 0 / 0.38), transparent 70%);
+}
+
+:global(html:not(.dark)) .vinheta {
+  background:
+    radial-gradient(120% 70% at 50% -12%, color-mix(in oklab, var(--color-musgo) 10%, transparent), transparent 62%),
+    radial-gradient(95% 65% at 50% 118%, rgb(19 28 46 / 0.07), transparent 70%);
+}
+
+/* Lanterna do mecanico: halo suave e grade revelada por mask-image radial */
+.halo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 640px;
+  margin: -320px 0 0 -320px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--wallpaper-halo), transparent);
+  opacity: 0;
+  transition: opacity 0.7s var(--ease-oficina);
+  will-change: transform;
+}
+
+.grade {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--wallpaper-grade) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--wallpaper-grade) 1px, transparent 1px),
+    linear-gradient(to right, var(--wallpaper-grade-fina) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--wallpaper-grade-fina) 1px, transparent 1px);
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  background-position: -1px -1px;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease-oficina);
+}
+
+.halo[data-acesa="true"],
+.grade[data-acesa="true"] {
+  opacity: 1;
+}
+
+/* Linhas: o saldo decide o tom entre o musgo e um marinho mais frio */
+.linhas {
+  position: absolute;
+  inset: 0;
+  color: color-mix(in oklab, var(--wallpaper-quente) var(--tom, 70%), var(--wallpaper-frio));
+  transition: color 1.8s var(--ease-oficina);
+}
+
+.camada {
+  position: absolute;
+  top: -48px;
+  left: -48px;
+  width: calc(100% + 96px);
+  height: calc(100% + 96px);
+  overflow: visible;
+  will-change: transform;
+}
+
+.primaria {
+  opacity: 0.2;
+}
+
+.secundaria {
+  opacity: 0.17;
+}
+
+.acento {
+  opacity: 0.14;
+}
+
+.faiscas {
+  color: var(--wallpaper-faisca);
+  opacity: 0.55;
+  filter: drop-shadow(0 0 3px var(--wallpaper-faisca));
+}
+
+.alerta {
+  color: var(--color-carmesim);
+  opacity: 0;
+  filter: drop-shadow(0 0 7px rgb(163 38 58 / 0.6));
+}
+
+.alerta[data-ativo="false"] {
+  visibility: hidden;
+}
+
+/* Com movimento reduzido a linha de alerta fica acesa, parada */
+.alerta[data-estatico="true"] {
+  opacity: 0.38;
+}
+
+.grao {
+  position: absolute;
+  inset: 0;
+  opacity: var(--wallpaper-grao);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* Modo foco: escurece 30% e volta suave */
+.veu {
+  position: absolute;
+  inset: 0;
+  background: var(--wallpaper-veu);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-oficina);
+}
+
+.veu[data-foco="true"] {
+  opacity: 0.3;
+  transition-duration: 1.6s;
+}
