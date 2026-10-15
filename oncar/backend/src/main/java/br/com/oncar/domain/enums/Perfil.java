@@ -1,7 +1,6 @@
 package br.com.oncar.domain.enums;
 
 public enum Perfil {
-
     PROPRIETARIO("Proprietario"),
     GERENTE_ESTOQUE("Gerente de Estoque"),
     ATENDENTE("Atendente"),
