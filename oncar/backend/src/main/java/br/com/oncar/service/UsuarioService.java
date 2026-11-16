@@ -3,6 +3,7 @@ package br.com.oncar.service;
 import br.com.oncar.domain.enums.AcaoAuditoria;
 import br.com.oncar.domain.model.SenhaHistorico;
 import br.com.oncar.domain.model.Usuario;
+import br.com.oncar.repository.DespesaRepository;
 import br.com.oncar.repository.MovimentacaoRepository;
 import br.com.oncar.repository.SenhaHistoricoRepository;
 import br.com.oncar.repository.UsuarioRepository;
@@ -26,17 +27,20 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final SenhaHistoricoRepository senhaHistoricoRepository;
     private final MovimentacaoRepository movimentacaoRepository;
+    private final DespesaRepository despesaRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuditoriaService auditoriaService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           SenhaHistoricoRepository senhaHistoricoRepository,
                           MovimentacaoRepository movimentacaoRepository,
+                          DespesaRepository despesaRepository,
                           PasswordEncoder passwordEncoder,
                           AuditoriaService auditoriaService) {
         this.usuarioRepository = usuarioRepository;
         this.senhaHistoricoRepository = senhaHistoricoRepository;
         this.movimentacaoRepository = movimentacaoRepository;
+        this.despesaRepository = despesaRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditoriaService = auditoriaService;
     }
@@ -115,9 +119,9 @@ public class UsuarioService {
     @Transactional
     public void excluir(Long id) {
         Usuario usuario = buscarPorId(id);
-        if (movimentacaoRepository.existsByUsuarioId(id)) {
+        if (movimentacaoRepository.existsByUsuarioId(id) || despesaRepository.existsByUsuarioId(id)) {
             throw new RegraNegocioException("O usuario " + usuario.getEmail()
-                    + " possui movimentacoes registradas e nao pode ser excluido. Inative o cadastro.");
+                    + " possui lancamentos registrados e nao pode ser excluido. Inative o cadastro.");
         }
         senhaHistoricoRepository.deleteAll(senhaHistoricoRepository.findByUsuarioOrderByCriadoEmDesc(usuario));
         usuarioRepository.delete(usuario);

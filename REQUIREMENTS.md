@@ -43,7 +43,7 @@ cp .env.example .env         # ajuste as variáveis
 
 ```bash
 cd oncar/frontend
-cp .env.example .env.local # ajuste as variáveis
+cp .env.example .env.local # ONCAR_BACKEND_URL, se o backend não estiver na 8080
 npm ci                     # instala a partir do package-lock.json
 ```
 
@@ -67,14 +67,33 @@ cd oncar/backend
 
 Sobe em <http://localhost:8080> (perfil `dev`, dados de demonstração, senha `oncar2026`).
 
-### Backend — produção (PostgreSQL)
+### Tudo com Docker (PostgreSQL + backend + frontend)
 
 ```bash
-cd oncar/backend
+cd oncar
+cp .env.example .env      # senha do banco, primeiro proprietário e portas
 docker compose up --build
 ```
 
-ou com um Postgres próprio, definindo `ONCAR_DB_URL`, `ONCAR_DB_USER`, `ONCAR_DB_PASSWORD`.
+Front-end em <http://localhost:3000> e telas Thymeleaf/API em <http://localhost:8080>. Se as
+portas estiverem ocupadas, troque `ONCAR_PORTA_WEB` e `ONCAR_PORTA_API` no `.env`. O banco fica
+no volume `oncar_dados` e sobrevive a `docker compose down` (use `down -v` para apagar).
+
+O perfil de produção começa sem usuários: o proprietário inicial vem de `ONCAR_ADMIN_EMAIL` e
+`ONCAR_ADMIN_SENHA`, e só é criado enquanto a base estiver vazia.
+
+### Backend — produção (PostgreSQL)
+
+Só banco + API com as telas Thymeleaf:
+
+```bash
+cd oncar/backend
+cp .env.example .env
+docker compose up --build
+```
+
+ou com um Postgres próprio, definindo `ONCAR_DB_URL`, `ONCAR_DB_USER`, `ONCAR_DB_PASSWORD`,
+`ONCAR_ADMIN_EMAIL` e `ONCAR_ADMIN_SENHA`.
 
 ### Frontend
 

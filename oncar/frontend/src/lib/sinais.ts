@@ -1,9 +1,9 @@
 /**
  * Sinais da oficina para o GarageWallpaper, derivados dos dados que a API ja expoe.
  *
- * A API ainda nao tem ordens de servico nem financeiro, entao
- * dois sinais sao aproximacoes documentadas; quando esses modulos existirem,
- * basta trocar o calculo aqui e o wallpaper continua igual.
+ * A API ainda nao tem ordens de servico, entao "OS abertas" e uma aproximacao
+ * documentada; quando esse modulo existir, basta trocar o calculo aqui e o
+ * wallpaper continua igual.
  */
 import type { Movimentacao, Painel, Produto } from "@/lib/tipos";
 
@@ -50,7 +50,7 @@ export function osComPecasHoje(movimentacoes: Movimentacao[], hoje: string): num
 }
 
 /**
- * Aproximacao do saldo enquanto o financeiro nao existe: fluxo das movimentacoes
+ * Aproximacao do saldo para quem ve custos mas nao o financeiro: fluxo das movimentacoes
  * recentes (a API devolve as 50 ultimas). Vendas e OS entram pelo preco de venda;
  * compras e perdas saem pelo custo medio atual. Sem acesso a custos nao
  * ha como estimar, e o wallpaper fica no tom neutro.
@@ -93,9 +93,11 @@ export function sinaisDaOficina(
   produtos: Produto[],
   hoje: string,
 ): Sinais {
+  // o proprietario recebe o resultado apurado do mes; os demais ficam com a estimativa
+  const resultadoDoMes = painel?.financeiro ? Number(painel.financeiro.mesAtual.resultado) : undefined;
   return {
     osAbertas: osComPecasHoje(movimentacoes, hoje),
     estoqueCritico: painel?.itensAbaixoDoMinimo,
-    saldo: fluxoEstimado(movimentacoes, produtos),
+    saldo: resultadoDoMes ?? fluxoEstimado(movimentacoes, produtos),
   };
 }

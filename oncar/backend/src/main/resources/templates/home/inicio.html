@@ -43,6 +43,128 @@
         </div>
     </div>
 
+    <!-- painel gerencial: receita e despesa so para o proprietario -->
+    <div th:if="${financeiro}" th:with="mes=${financeiro.mesAtual()}">
+        <h2 class="h5 mb-3" th:text="'Resultado de ' + ${nomeDoMes}">Resultado do mes</h2>
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1 small"><span class="legenda-cor receita"></span>Receita do mes</p>
+                        <p class="h4 mb-0" th:text="${@formatos.moeda(mes.receita())}">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1 small"><span class="legenda-cor despesa"></span>Despesa do mes</p>
+                        <p class="h4 mb-0" th:text="${@formatos.moeda(mes.despesaTotal())}">R$ 0,00</p>
+                        <p class="text-muted small mb-0"
+                           th:text="'pecas ' + ${@formatos.moeda(mes.custoDasVendas())} + ' - operacionais ' + ${@formatos.moeda(mes.despesasOperacionais())}"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1 small">Resultado</p>
+                        <p class="h4 mb-0" th:classappend="${mes.resultado().signum() < 0} ? 'text-danger' : 'text-success'"
+                           th:text="${@formatos.moeda(mes.resultado())}">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1 small">Margem bruta</p>
+                        <p class="h4 mb-0" th:text="${@formatos.moeda(mes.margemBruta())}">R$ 0,00</p>
+                        <p class="text-muted small mb-0" th:text="'compras ' + ${@formatos.moeda(mes.compras())}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span>Receita x despesa nos ultimos meses</span>
+                <span class="small text-muted">
+                    <span class="legenda-cor receita"></span>Receita
+                    <span class="legenda-cor despesa ms-3"></span>Despesa
+                </span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-0" th:if="${grafico.vazio()}">
+                    Ainda nao ha vendas nem despesas lancadas nestes meses.
+                </p>
+                <div class="grafico-colunas" th:unless="${grafico.vazio()}">
+                    <div class="grafico-eixo" aria-hidden="true">
+                        <span th:each="marca : ${grafico.eixo()}" th:style="'bottom: ' + ${marca.posicao()} + '%'"
+                              th:text="${marca.rotulo()}"></span>
+                    </div>
+                    <div class="grafico-area">
+                        <span class="grafico-grade" aria-hidden="true" th:each="marca : ${grafico.eixo()}"
+                              th:style="'bottom: ' + ${marca.posicao()} + '%'"></span>
+                        <div class="grafico-grupo" th:each="coluna : ${grafico.colunas()}">
+                            <div class="grafico-barras">
+                                <span class="grafico-barra receita" tabindex="0"
+                                      th:style="'height: ' + ${coluna.alturaReceita()} + '%'"
+                                      th:attr="data-dica=${@formatos.moeda(coluna.receita())},aria-label='Receita de ' + ${coluna.mesCompleto()} + ': ' + ${@formatos.moeda(coluna.receita())}"></span>
+                                <span class="grafico-barra despesa" tabindex="0"
+                                      th:style="'height: ' + ${coluna.alturaDespesa()} + '%'"
+                                      th:attr="data-dica=${@formatos.moeda(coluna.despesa())},aria-label='Despesa de ' + ${coluna.mesCompleto()} + ': ' + ${@formatos.moeda(coluna.despesa())}"></span>
+                            </div>
+                            <span class="grafico-mes" th:classappend="${coluna.atual()} ? 'fw-semibold'"
+                                  th:text="${coluna.mes()}">out/26</span>
+                        </div>
+                    </div>
+                </div>
+                <details class="mt-3">
+                    <summary class="small">Ver os valores em tabela</summary>
+                    <table class="table table-sm small mt-2 mb-0">
+                        <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th class="text-end">Receita</th>
+                            <th class="text-end">Despesa</th>
+                            <th class="text-end">Resultado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${financeiro.historico()}">
+                            <td th:text="${item.nomeDoMes()}"></td>
+                            <td class="text-end" th:text="${@formatos.moeda(item.receita())}"></td>
+                            <td class="text-end" th:text="${@formatos.moeda(item.despesaTotal())}"></td>
+                            <td class="text-end" th:text="${@formatos.moeda(item.resultado())}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </details>
+                <a class="small" th:href="@{/relatorios/gastos}">Abrir o relatorio de gastos e resultado</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header" th:text="'Pecas de maior giro em ' + ${nomeDoMes}">Pecas de maior giro</div>
+        <div class="card-body">
+            <p class="text-muted small mb-0" th:if="${#lists.isEmpty(maiorGiro)}">
+                Nenhuma venda ou ordem de servico registrada neste mes.
+            </p>
+            <ul class="list-unstyled mb-0 grafico-giro" th:unless="${#lists.isEmpty(maiorGiro)}">
+                <li th:each="barra : ${maiorGiro}" th:with="produto=${barra.produto()}">
+                    <a class="small" th:href="@{/produtos/{id}/extrato(id=${produto.produtoId()})}"
+                       th:text="${produto.sku()} + ' - ' + ${produto.descricao()}"></a>
+                    <div class="grafico-giro-linha">
+                        <span class="grafico-giro-barra" th:style="'width: ' + ${barra.largura()} + '%'"></span>
+                        <span class="small text-nowrap"
+                              th:text="${@formatos.quantidade(produto.quantidade())} + ' ' + ${produto.unidade()} + ' em ' + ${produto.saidas()} + ' saida(s)' + (${produto.receita() != null} ? ' - ' + ${@formatos.moeda(produto.receita())} : '')"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <!-- lista de reposicao -->
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">

@@ -262,6 +262,12 @@ public class EstoqueService {
         movimentacao.setJustificativa(justificativa);
         movimentacao.setCompetencia(competencia == null ? LocalDate.now() : competencia);
         movimentacao.setUsuario(usuario);
+        // preco e custo do momento ficam gravados: alteracoes futuras no cadastro
+        // nao reescrevem a receita nem a posicao de meses ja apurados
+        if (tipo == TipoMovimentacao.SAIDA) {
+            movimentacao.setPrecoVendaUnitario(produto.getPrecoVenda());
+        }
+        movimentacao.setCustoMedioResultante(produto.getPrecoCusto());
         return movimentacao;
     }
 

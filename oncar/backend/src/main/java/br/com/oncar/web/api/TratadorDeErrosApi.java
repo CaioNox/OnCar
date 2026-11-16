@@ -10,6 +10,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice(basePackages = "br.com.oncar.web.api")
 public class TratadorDeErrosApi {
@@ -31,6 +32,12 @@ public class TratadorDeErrosApi {
                 .toList();
         return ResponseEntity.badRequest().body(new RespostaDtos.Erro(
                 "Confira os dados informados antes de continuar.", detalhes));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<RespostaDtos.Erro> parametroInvalido(MethodArgumentTypeMismatchException excecao) {
+        return ResponseEntity.badRequest().body(RespostaDtos.Erro.de("O valor informado em \""
+                + excecao.getName() + "\" nao e valido. Confira o filtro e tente novamente."));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

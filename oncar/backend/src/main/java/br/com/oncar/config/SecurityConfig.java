@@ -97,6 +97,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/movimentacoes/saida")
                         .hasAnyRole(PROPRIETARIO, GERENTE, ATENDENTE)
                         .requestMatchers("/clientes/**").hasAnyRole(PROPRIETARIO, GERENTE, ATENDENTE)
+                        // despesas, gastos e resultado sao dados financeiros consolidados; o gerente
+                        // emite apenas os relatorios operacionais (entradas, saidas e posicao)
+                        .requestMatchers("/despesas/**", "/api/despesas/**",
+                                "/relatorios/gastos/**", "/api/relatorios/gastos/**").hasRole(PROPRIETARIO)
+                        .requestMatchers("/relatorios/**", "/api/relatorios/**").hasAnyRole(PROPRIETARIO, GERENTE)
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

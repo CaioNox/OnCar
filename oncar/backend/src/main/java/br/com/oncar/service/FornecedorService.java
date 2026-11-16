@@ -2,6 +2,7 @@ package br.com.oncar.service;
 
 import br.com.oncar.domain.enums.AcaoAuditoria;
 import br.com.oncar.domain.model.Fornecedor;
+import br.com.oncar.repository.DespesaRepository;
 import br.com.oncar.repository.FornecedorRepository;
 import br.com.oncar.repository.MovimentacaoRepository;
 import br.com.oncar.service.exception.RegistroNaoEncontradoException;
@@ -15,13 +16,16 @@ public class FornecedorService {
 
     private final FornecedorRepository fornecedorRepository;
     private final MovimentacaoRepository movimentacaoRepository;
+    private final DespesaRepository despesaRepository;
     private final AuditoriaService auditoriaService;
 
     public FornecedorService(FornecedorRepository fornecedorRepository,
                              MovimentacaoRepository movimentacaoRepository,
+                             DespesaRepository despesaRepository,
                              AuditoriaService auditoriaService) {
         this.fornecedorRepository = fornecedorRepository;
         this.movimentacaoRepository = movimentacaoRepository;
+        this.despesaRepository = despesaRepository;
         this.auditoriaService = auditoriaService;
     }
 
@@ -87,9 +91,9 @@ public class FornecedorService {
     @Transactional
     public void excluir(Long id) {
         Fornecedor fornecedor = buscarPorId(id);
-        if (movimentacaoRepository.existsByFornecedorId(id)) {
+        if (movimentacaoRepository.existsByFornecedorId(id) || despesaRepository.existsByFornecedorId(id)) {
             throw new RegraNegocioException("O fornecedor " + fornecedor.getRazaoSocial()
-                    + " possui movimentacoes registradas e nao pode ser excluido. Inative o cadastro.");
+                    + " possui lancamentos registrados e nao pode ser excluido. Inative o cadastro.");
         }
         fornecedorRepository.delete(fornecedor);
         auditoriaService.registrar(AcaoAuditoria.EXCLUSAO, "Fornecedor", id,

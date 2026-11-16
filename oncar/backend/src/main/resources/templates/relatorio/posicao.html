@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Posicao de estoque</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container mb-5">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+    <div th:replace="~{relatorio/fragmentos :: abas}"></div>
+    <form th:replace="~{relatorio/fragmentos :: filtros}"></form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Valor em estoque no fechamento</p>
+                    <p class="h3 mb-0" th:text="${@formatos.moeda(relatorio.valorTotal())}">R$ 0,00</p>
+                    <p class="text-muted small mb-0">a custo medio vigente no fim do periodo</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Produtos na posicao</p>
+                    <p class="h3 mb-0" th:text="${#lists.size(relatorio.linhas())}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">No minimo ou abaixo no fechamento</p>
+                    <p class="h3 mb-0" th:text="${relatorio.produtosAbaixoDoMinimo()}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm bg-white align-middle">
+            <caption class="small">
+                Saldo fisico pela data de cada lancamento: saldo inicial + entradas - saidas + ajustes e
+                estornos = saldo final. O filtro de fornecedor considera o fornecedor padrao da peca.
+            </caption>
+            <thead class="table-light">
+            <tr>
+                <th>Produto</th>
+                <th class="text-end">Saldo inicial</th>
+                <th class="text-end">Entradas</th>
+                <th class="text-end">Saidas</th>
+                <th class="text-end">Ajustes e estornos</th>
+                <th class="text-end">Saldo final</th>
+                <th class="text-end">Minimo</th>
+                <th class="text-end">Custo medio</th>
+                <th class="text-end">Valor final</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="linha : ${relatorio.linhas()}" th:classappend="${linha.abaixoDoMinimo()} ? 'table-warning'">
+                <td>
+                    <a th:href="@{/produtos/{id}/extrato(id=${linha.produtoId()})}"
+                       th:text="${linha.sku()} + ' - ' + ${linha.produto()}"></a>
+                    <span class="badge bg-secondary" th:unless="${linha.ativo()}">Inativo</span>
+                    <div class="text-muted small" th:text="${linha.categoria()} + ' - ' + ${linha.unidade()}"></div>
+                </td>
+                <td class="text-end" th:text="${@formatos.quantidade(linha.saldoInicial())}"></td>
+                <td class="text-end" th:text="${@formatos.quantidade(linha.entradas())}"></td>
+                <td class="text-end" th:text="${@formatos.quantidade(linha.saidas())}"></td>
+                <td class="text-end" th:text="${@formatos.variacao(linha.ajustes())}"></td>
+                <td class="text-end fw-semibold" th:text="${@formatos.quantidade(linha.saldoFinal())}"></td>
+                <td class="text-end" th:text="${@formatos.quantidade(linha.estoqueMinimo())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(linha.custoMedio())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(linha.valorFinal())}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(relatorio.linhas())}">
+                <td colspan="9" class="text-center text-muted">Nenhum produto com estes filtros.</td>
+            </tr>
+            </tbody>
+            <tfoot th:unless="${#lists.isEmpty(relatorio.linhas())}">
+            <tr class="fw-semibold">
+                <td colspan="8">Total</td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(relatorio.valorTotal())}"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

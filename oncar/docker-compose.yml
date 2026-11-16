@@ -1,0 +1,59 @@
+# OnCar completo: PostgreSQL + API Spring Boot (com as telas Thymeleaf) + front-end Next.js.
+#
+#   cp .env.example .env      # defina a senha do banco e o primeiro proprietario
+#   docker compose up --build
+#
+# Front-end em http://localhost:3000 e API/telas Thymeleaf em http://localhost:8080
+# (portas trocaveis no .env). Os servicos banco e backend espelham backend/docker-compose.yml;
+# o projeto tem o mesmo nome nos dois arquivos, entao os dados do banco sao os mesmos.
+name: oncar
+
+services:
+  banco:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: oncar
+      POSTGRES_USER: ${ONCAR_DB_USER:-oncar}
+      POSTGRES_PASSWORD: ${ONCAR_DB_PASSWORD:?defina ONCAR_DB_PASSWORD no arquivo .env}
+    volumes:
+      - dados:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      banco:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      ONCAR_DB_URL: jdbc:postgresql://banco:5432/oncar
+      ONCAR_DB_USER: ${ONCAR_DB_USER:-oncar}
+      ONCAR_DB_PASSWORD: ${ONCAR_DB_PASSWORD}
+      # so usados enquanto a base nao tem nenhum usuario
+      ONCAR_ADMIN_NOME: ${ONCAR_ADMIN_NOME:-Proprietario}
+      ONCAR_ADMIN_EMAIL: ${ONCAR_ADMIN_EMAIL:-}
+      ONCAR_ADMIN_SENHA: ${ONCAR_ADMIN_SENHA:-}
+    ports:
+      - "${ONCAR_PORTA_API:-8080}:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # nome do servico na rede do compose; gravado no build do Next
+        ONCAR_BACKEND_URL: http://backend:8080
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${ONCAR_PORTA_WEB:-3000}:3000"
+
+volumes:
+  dados:

@@ -54,7 +54,9 @@ public class ProdutoService {
     @Transactional(readOnly = true)
     public List<Produto> pesquisar(String termo, CategoriaProduto categoria, Long fornecedorId,
                                    boolean somenteAtivos) {
-        String termoLimpo = (termo == null || termo.isBlank()) ? null : termo.trim();
+        // sem termo vai texto vazio, e nao nulo: o PostgreSQL recebe um nulo sem tipo como
+        // bytea e recusa o lower() da consulta
+        String termoLimpo = termo == null ? "" : termo.trim();
         return produtoRepository.pesquisar(termoLimpo, categoria, fornecedorId, somenteAtivos);
     }
 

@@ -17,6 +17,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findAllByOrderByDescricaoAsc();
 
+    @Query("select p from Produto p left join fetch p.fornecedorPadrao order by p.descricao")
+    List<Produto> listarComFornecedor();
+
     List<Produto> findByAtivoTrueOrderByDescricaoAsc();
 
     @Query("""
@@ -30,7 +33,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Query("""
             select p from Produto p
             left join fetch p.fornecedorPadrao f
-            where (:termo is null
+            where (:termo = ''
                    or lower(p.descricao) like lower(concat('%', :termo, '%'))
                    or lower(p.sku) like lower(concat('%', :termo, '%'))
                    or lower(coalesce(p.marca, '')) like lower(concat('%', :termo, '%'))

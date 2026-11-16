@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>OnCar - Relatorios</title>
+</head>
+<body>
+
+<!-- Titulo e abas dos relatorios; o periodo escolhido acompanha a troca de aba -->
+<div th:fragment="abas">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+        <div>
+            <h1 class="h4 mb-0">Relatorios mensais</h1>
+            <p class="text-muted small mb-0">
+                Periodo de competencia: <strong th:text="${periodo.descricao()}">Outubro/2026</strong>
+            </p>
+        </div>
+    </div>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${relatorioAtivo == 'entradas'} ? 'active'"
+               th:attr="aria-current=${relatorioAtivo == 'entradas'} ? 'page' : null"
+               th:href="@{/relatorios/entradas(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Entradas</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${relatorioAtivo == 'saidas'} ? 'active'"
+               th:attr="aria-current=${relatorioAtivo == 'saidas'} ? 'page' : null"
+               th:href="@{/relatorios/saidas(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Saidas</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('PROPRIETARIO')">
+            <a class="nav-link" th:classappend="${relatorioAtivo == 'gastos'} ? 'active'"
+               th:attr="aria-current=${relatorioAtivo == 'gastos'} ? 'page' : null"
+               th:href="@{/relatorios/gastos(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Gastos e resultado</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${relatorioAtivo == 'posicao'} ? 'active'"
+               th:attr="aria-current=${relatorioAtivo == 'posicao'} ? 'page' : null"
+               th:href="@{/relatorios/posicao(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Posicao de estoque</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Filtros comuns: periodo, categoria, fornecedor e, quando faz sentido, usuario -->
+<form th:fragment="filtros" class="card card-body mb-4" method="get"
+      th:action="@{/relatorios/{tipo}(tipo=${relatorioAtivo})}">
+    <div class="row g-3 align-items-end">
+        <div class="col-6 col-md-2">
+            <label class="form-label" for="inicio">De</label>
+            <input class="form-control" type="month" id="inicio" name="inicio" th:value="${periodo.inicio()}">
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label" for="fim">Ate</label>
+            <input class="form-control" type="month" id="fim" name="fim" th:value="${periodo.fim()}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" for="categoria">Categoria</label>
+            <select class="form-select" id="categoria" name="categoria">
+                <option value="">Todas</option>
+                <option th:each="opcao : ${categorias}" th:value="${opcao.valor()}" th:text="${opcao.descricao()}"
+                        th:selected="${opcao.valor() == filtroCategoria}"></option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="fornecedorId">Fornecedor</label>
+            <select class="form-select" id="fornecedorId" name="fornecedorId">
+                <option value="">Todos</option>
+                <option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}"
+                        th:text="${fornecedor.razaoSocial} + (${fornecedor.ativo} ? '' : ' (inativo)')"
+                        th:selected="${fornecedor.id == filtroFornecedor}"></option>
+            </select>
+        </div>
+        <div class="col-md-2" th:if="${filtraUsuario}">
+            <label class="form-label" for="usuarioId">Lancado por</label>
+            <select class="form-select" id="usuarioId" name="usuarioId">
+                <option value="">Todos</option>
+                <option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nome}"
+                        th:selected="${usuario.id == filtroUsuario}"></option>
+            </select>
+        </div>
+        <div class="col-md-1 d-grid">
+            <button class="btn btn-primary" type="submit">Gerar</button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

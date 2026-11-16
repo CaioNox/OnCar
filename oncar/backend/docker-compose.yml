@@ -1,0 +1,45 @@
+# So o back-end: PostgreSQL + API Spring Boot com as telas Thymeleaf.
+#
+#   cp .env.example .env      # defina a senha do banco e o primeiro proprietario
+#   docker compose up --build
+#
+# Telas e API em http://localhost:8080 (porta trocavel no .env). Para subir tambem o
+# front-end Next.js, use o docker-compose.yml da pasta oncar/, que repete estes servicos.
+name: oncar
+
+services:
+  banco:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: oncar
+      POSTGRES_USER: ${ONCAR_DB_USER:-oncar}
+      POSTGRES_PASSWORD: ${ONCAR_DB_PASSWORD:?defina ONCAR_DB_PASSWORD no arquivo .env}
+    volumes:
+      - dados:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      banco:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      ONCAR_DB_URL: jdbc:postgresql://banco:5432/oncar
+      ONCAR_DB_USER: ${ONCAR_DB_USER:-oncar}
+      ONCAR_DB_PASSWORD: ${ONCAR_DB_PASSWORD}
+      # so usados enquanto a base nao tem nenhum usuario
+      ONCAR_ADMIN_NOME: ${ONCAR_ADMIN_NOME:-Proprietario}
+      ONCAR_ADMIN_EMAIL: ${ONCAR_ADMIN_EMAIL:-}
+      ONCAR_ADMIN_SENHA: ${ONCAR_ADMIN_SENHA:-}
+    ports:
+      - "${ONCAR_PORTA_API:-8080}:8080"
+
+volumes:
+  dados:

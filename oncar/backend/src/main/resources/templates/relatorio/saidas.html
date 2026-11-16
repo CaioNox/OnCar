@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Relatorio de saidas</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container mb-5">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+    <div th:replace="~{relatorio/fragmentos :: abas}"></div>
+    <form th:replace="~{relatorio/fragmentos :: filtros}"></form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Receita (vendas e OS)</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(relatorio.receita())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Custo das pecas vendidas</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(relatorio.custoDasVendas())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Margem bruta</p>
+                    <p class="h4 mb-0" th:classappend="${relatorio.margemBruta().signum() < 0} ? 'text-danger'"
+                       th:text="${@formatos.moeda(relatorio.margemBruta())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Custo de todas as saidas</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(relatorio.custoTotal())}">R$ 0,00</p>
+                    <p class="text-muted small mb-0">inclui devolucoes e perdas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Por motivo (a custo medio)</div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between" th:each="grupo : ${relatorio.porMotivo()}">
+                        <span th:text="${grupo.grupo()} + ' (' + ${grupo.lancamentos()} + ')'"></span>
+                        <span th:text="${@formatos.moeda(grupo.valor())}"></span>
+                    </li>
+                    <li class="list-group-item text-muted" th:if="${#lists.isEmpty(relatorio.porMotivo())}">-</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">Por categoria (a custo medio)</div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between" th:each="grupo : ${relatorio.porCategoria()}">
+                        <span th:text="${grupo.grupo()} + ' (' + ${grupo.lancamentos()} + ')'"></span>
+                        <span th:text="${@formatos.moeda(grupo.valor())}"></span>
+                    </li>
+                    <li class="list-group-item text-muted" th:if="${#lists.isEmpty(relatorio.porCategoria())}">-</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm bg-white align-middle">
+            <caption class="small">
+                Lancamentos estornados nao entram no relatorio. O filtro de fornecedor considera o
+                fornecedor padrao de cada peca.
+            </caption>
+            <thead class="table-light">
+            <tr>
+                <th>Competencia</th>
+                <th>Produto</th>
+                <th>Motivo</th>
+                <th>Cliente</th>
+                <th>Documento</th>
+                <th class="text-end">Quantidade</th>
+                <th class="text-end">Custo</th>
+                <th class="text-end">Valor de venda</th>
+                <th>Usuario</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="linha : ${relatorio.linhas()}">
+                <td class="text-nowrap" th:text="${#temporals.format(linha.competencia(), 'dd/MM/yyyy')}"></td>
+                <td>
+                    <a th:href="@{/produtos/{id}/extrato(id=${linha.produtoId()})}"
+                       th:text="${linha.sku()} + ' - ' + ${linha.produto()}"></a>
+                    <div class="text-muted small" th:text="${linha.categoria()}"></div>
+                </td>
+                <td th:text="${linha.motivo()}"></td>
+                <td th:text="${linha.cliente()}"></td>
+                <td th:text="${linha.documento()}"></td>
+                <td class="text-end text-nowrap"
+                    th:text="${@formatos.quantidade(linha.quantidade())} + ' ' + ${linha.unidade()}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(linha.custoTotal())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(linha.valorVenda())}"></td>
+                <td th:text="${linha.usuario()}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(relatorio.linhas())}">
+                <td colspan="9" class="text-center text-muted">Nenhuma saida no periodo com estes filtros.</td>
+            </tr>
+            </tbody>
+            <tfoot th:unless="${#lists.isEmpty(relatorio.linhas())}">
+            <tr class="fw-semibold">
+                <td colspan="6">Total</td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(relatorio.custoTotal())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(relatorio.receita())}"></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

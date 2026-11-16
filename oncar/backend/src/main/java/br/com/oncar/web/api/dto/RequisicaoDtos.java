@@ -53,4 +53,17 @@ public final class RequisicaoDtos {
             @Size(min = 10, max = 500, message = "A justificativa deve conter no minimo 10 caracteres")
             String justificativa) {
     }
+
+    public record Despesa(
+            @NotBlank(message = "Descreva a despesa")
+            @Size(min = 3, max = 120, message = "A descricao deve conter entre 3 e 120 caracteres")
+            String descricao,
+            @NotBlank(message = "Selecione a categoria da despesa") String categoria,
+            @NotNull(message = "Informe o valor da despesa")
+            @Positive(message = "O valor deve ser maior que zero") BigDecimal valor,
+            @NotNull(message = "Informe a data de competencia") LocalDate competencia,
+            Long fornecedorId,
+            @Size(max = 60, message = "O documento deve conter no maximo 60 caracteres") String documento,
+            @Size(max = 500, message = "A observacao deve conter no maximo 500 caracteres") String observacao) {
+    }
 }

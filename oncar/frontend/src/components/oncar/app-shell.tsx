@@ -24,16 +24,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { api, ErroDaApi } from "@/lib/api";
 import { dataLocal, sinaisDaOficina, type Sinais } from "@/lib/sinais";
-import type { Movimentacao, Painel, Produto, UsuarioSessao } from "@/lib/tipos";
+import {
+  podeEmitirRelatorios,
+  podeVerFinanceiro,
+  type Movimentacao,
+  type Painel,
+  type Produto,
+  type UsuarioSessao,
+} from "@/lib/tipos";
 import { cn } from "@/lib/utils";
 
 // Mantido para as telas que ja importavam daqui.
 export { useGerenciaEstoque, useUsuario } from "@/components/oncar/contexto";
 
-const LINKS = [
+const LINKS: { href: string; rotulo: string; icone: string; visivel?: (usuario: UsuarioSessao) => boolean }[] = [
   { href: "/painel", rotulo: "Painel", icone: "bi-speedometer2" },
   { href: "/produtos", rotulo: "Produtos", icone: "bi-box-seam" },
   { href: "/movimentacoes", rotulo: "Movimentações", icone: "bi-arrow-left-right" },
+  { href: "/despesas", rotulo: "Despesas", icone: "bi-receipt", visivel: podeVerFinanceiro },
+  { href: "/relatorios", rotulo: "Relatórios", icone: "bi-bar-chart-line", visivel: podeEmitirRelatorios },
 ];
 
 type Dados = {
@@ -230,7 +239,7 @@ function Cabecalho({
 
         <nav aria-label="Principal" className="min-w-0 flex-1">
           <ul className="flex items-center gap-0.5 sm:gap-1">
-            {LINKS.map((link) => {
+            {LINKS.filter((link) => !link.visivel || link.visivel(usuario)).map((link) => {
               const ativo = caminho.startsWith(link.href);
               return (
                 <li key={link.href} className="relative">

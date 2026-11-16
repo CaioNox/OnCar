@@ -6,6 +6,7 @@ import br.com.oncar.domain.enums.UnidadeMedida;
 import br.com.oncar.domain.model.Produto;
 import br.com.oncar.domain.model.Usuario;
 import br.com.oncar.repository.ClienteRepository;
+import br.com.oncar.repository.DespesaRepository;
 import br.com.oncar.repository.FornecedorRepository;
 import br.com.oncar.repository.LogAuditoriaRepository;
 import br.com.oncar.repository.MovimentacaoRepository;
@@ -27,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 public abstract class TesteIntegracao {
 
     protected static final String EMAIL_GERENTE = "gerente@teste.com.br";
+    protected static final String EMAIL_PROPRIETARIO = "proprietario@teste.com.br";
 
     @Autowired
     protected UsuarioService usuarioService;
@@ -55,8 +57,12 @@ public abstract class TesteIntegracao {
     @Autowired
     protected LogAuditoriaRepository logAuditoriaRepository;
 
+    @Autowired
+    protected DespesaRepository despesaRepository;
+
     @BeforeEach
     void limparBase() {
+        despesaRepository.deleteAll();
         movimentacaoRepository.deleteAll();
         produtoRepository.deleteAll();
         clienteRepository.deleteAll();
@@ -76,6 +82,14 @@ public abstract class TesteIntegracao {
         usuario.setNome("Gerente de Estoque");
         usuario.setEmail(EMAIL_GERENTE);
         usuario.setPerfil(Perfil.GERENTE_ESTOQUE);
+        return usuarioService.cadastrar(usuario, "oncar2026");
+    }
+
+    protected Usuario criarProprietario() {
+        Usuario usuario = new Usuario();
+        usuario.setNome("Dono da Oficina");
+        usuario.setEmail(EMAIL_PROPRIETARIO);
+        usuario.setPerfil(Perfil.PROPRIETARIO);
         return usuarioService.cadastrar(usuario, "oncar2026");
     }
 

@@ -58,7 +58,7 @@ impediriam a sessão de expirar por inatividade. O cálculo fica em `src/lib/sin
 | --- | --- | --- |
 | `estoqueCritico` | `painel.itensAbaixoDoMinimo` (real) | já é o dado final |
 | `osAbertas` | aproximação: OS distintas que receberam peças hoje (saídas por "Aplicação em ordem de serviço") | trocar pelo total de OS abertas do módulo de ordens de serviço |
-| `saldo` | aproximação: fluxo das 50 movimentações recentes (vendas e OS pelo preço de venda, menos compras e perdas pelo custo médio). Sem acesso a custos, fica neutro | trocar pelo saldo do financeiro |
+| `saldo` | proprietário: resultado apurado do mês (`painel.financeiro`). Gerente: fluxo estimado das 50 movimentações recentes. Sem acesso a custos, fica neutro | já é o dado final para o proprietário |
 
 ## Componentes KokonutUI
 
@@ -86,14 +86,24 @@ Ficaram sem uso depois do redesign e podem ser removidos: `anthropic*`, `open-ai
 | Rota | Destaque |
 | --- | --- |
 | `/login` | Beams em musgo e marinho; mostrar/ocultar senha |
-| `/painel` | Capital em estoque (ponto focal), abaixo do mínimo, lançamentos em 7 dias, tacômetros, reposição e kardex recente |
+| `/painel` | Capital em estoque (ponto focal), abaixo do mínimo, lançamentos em 7 dias, tacômetros, reposição, gestão do mês (receita x despesa para o proprietário, peças de maior giro para todos) e kardex recente |
 | `/produtos` | Tabela densa ou cartões com tilt (até 4°), chips de categoria, nível e situação; `?nivel=critico` |
 | `/produtos/[id]` | Curva do saldo em degraus, ficha e kardex com variação assinada |
 | `/movimentacoes` | Bancada com abas, confirmação animada, histórico filtrável e estorno inline; aceita `?aba=`, `?cliente=` e `?documento=` |
+| `/despesas` | Só o proprietário. Despesas por mês de competência, total por categoria, lançamento e edição em diálogo; `?inicio=`, `?fim=` (AAAA-MM) e `?nova=1` |
+| `/relatorios` | Proprietário e gerente. Abas de entradas, saídas, gastos e resultado (só proprietário) e posição de estoque, com filtros de período, categoria, fornecedor e usuário numa linha acima; `?tipo=`, `?inicio=`, `?fim=` |
 | `/demo` | Bancada de testes do wallpaper |
 
-A API ainda não expõe **ordens de serviço, financeiro e relatórios, veículos
-e o assistente de IA**. Enquanto isso:
+### Gráficos
+
+`GraficoReceitaDespesa` (colunas agrupadas, um eixo só) e `BarrasDeGiro` (barras horizontais) ficam em
+`src/components/oncar/`. As séries usam `--grafico-receita` e `--grafico-despesa` do `globals.css`, um par
+musgo/azul com croma suficiente para separar sob daltonismo, validado contra o cartão de cada tema
+(Papel: `#5f7f2a`/`#2f62a8`; Noturna: `#7a9d45`/`#5b8fd6`). Os tons do sistema (musgo, líquen) são
+apagados demais para marcar dados. O carmesim continua reservado para alerta. Cada gráfico tem dica no
+hover e no foco do teclado, e uma visão em tabela com os mesmos números.
+
+A API ainda não expõe **ordens de serviço, veículos e o assistente de IA**. Enquanto isso:
 - os tacômetros mostram leituras reais de estoque (acima do mínimo, sem ruptura, sem estorno);
 - a busca avisa que placas ainda não têm endpoint;
 - o assistente responde localmente com os endpoints de estoque (`src/lib/assistente.ts`),

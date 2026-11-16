@@ -6,6 +6,7 @@ import AppleActivityCard, { type ActivityData } from "@/components/kokonutui/app
 import { BentoCard, BentoGrid, superficieBento } from "@/components/kokonutui/bento-grid";
 import { LiquidGlassCard } from "@/components/kokonutui/liquid-glass-card";
 import { Erro } from "@/components/oncar/avisos";
+import { BarrasDeGiro } from "@/components/oncar/barras-de-giro";
 import { useOficina, useUsuario } from "@/components/oncar/contexto";
 import { EstadoVazio } from "@/components/oncar/estado-vazio";
 import {
@@ -14,8 +15,9 @@ import {
   TipoDeMovimentacao,
   nivelDoEstoque,
 } from "@/components/oncar/etiquetas";
+import { GraficoReceitaDespesa } from "@/components/oncar/grafico-receita-despesa";
 import { Sparkline } from "@/components/oncar/sparkline";
-import { formatarDataHora, formatarMoeda, formatarQuantidade } from "@/lib/api";
+import { formatarDataHora, formatarMes, formatarMoeda, formatarQuantidade } from "@/lib/api";
 import {
   lancamentosPorDia,
   leiturasDoEstoque,
@@ -23,7 +25,7 @@ import {
   serieDoCapital,
   type Leitura,
 } from "@/lib/painel";
-import type { Movimentacao, Painel, Produto } from "@/lib/tipos";
+import type { IndicadoresFinanceiros, Movimentacao, Painel, Produto, ProdutoGiro } from "@/lib/tipos";
 import { cn } from "@/lib/utils";
 
 export default function PaginaDoPainel() {
@@ -102,6 +104,8 @@ function ConteudoDoPainel() {
           <Reposicao lista={painel.listaDeReposicao} />
         </BentoCard>
       </BentoGrid>
+
+      <GestaoDoMes financeiro={painel.financeiro} maiorGiro={painel.maiorGiro} hoje={atualizadoEm} />
 
       <UltimasMovimentacoes movimentacoes={painel.ultimasMovimentacoes} />
     </section>
@@ -328,6 +332,98 @@ function Reposicao({ lista }: { lista: Produto[] }) {
         </Link>
       )}
     </div>
+  );
+}
+
+/** Receita x despesa (so o proprietario) e as pecas de maior giro do mes. */
+function GestaoDoMes({
+  financeiro,
+  maiorGiro,
+  hoje,
+}: {
+  financeiro: IndicadoresFinanceiros | null;
+  maiorGiro: ProdutoGiro[];
+  hoje: Date;
+}) {
+  const nomeDoMes = hoje.toLocaleDateString("pt-BR", { month: "long" });
+  return (
+    <section aria-labelledby="titulo-gestao" className="mt-16 md:mt-24">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="rotulo">Gestão do mês</p>
+          <h2 id="titulo-gestao" className="fonte-display mt-2 text-2xl sm:text-3xl">
+            {financeiro ? "Receita, despesa e giro" : "Peças que mais saíram"}
+          </h2>
+        </div>
+        <Link
+          href="/relatorios"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Abrir relatórios <i aria-hidden="true" className="bi bi-arrow-right" />
+        </Link>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-12 lg:gap-5">
+        {financeiro && (
+          <div className="rounded-3xl border bg-card/85 p-6 backdrop-blur-md lg:col-span-7">
+            <ResultadoDoMes financeiro={financeiro} />
+            <GraficoReceitaDespesa meses={financeiro.historico} className="mt-8 border-t pt-6" />
+          </div>
+        )}
+        <div className={cn("rounded-3xl border bg-card/85 p-6 backdrop-blur-md", financeiro ? "lg:col-span-5" : "lg:col-span-12")}>
+          <p className="rotulo">Maior giro em {nomeDoMes}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Quantidade que saiu por venda de balcão ou ordem de serviço.</p>
+          {maiorGiro.length === 0 ? (
+            <EstadoVazio ilustracao="caixa" titulo="Nenhuma venda ainda" className="py-8">
+              As peças vendidas ou aplicadas em OS neste mês aparecem aqui.
+            </EstadoVazio>
+          ) : (
+            <BarrasDeGiro produtos={maiorGiro} />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ResultadoDoMes({ financeiro }: { financeiro: IndicadoresFinanceiros }) {
+  const mes = financeiro.mesAtual;
+  const resultado = Number(mes.resultado);
+  return (
+    <>
+      <p className="rotulo">{mes.mes ? formatarMes(mes.mes) : "Mês atual"} · por competência</p>
+      <dl className="mt-4 grid gap-5 sm:grid-cols-3">
+        <div>
+          <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span aria-hidden="true" className="size-2.5 rounded-[2px] bg-grafico-receita" />
+            Receita
+          </dt>
+          <dd className="mt-1 text-2xl font-semibold">{formatarMoeda(mes.receita)}</dd>
+          <dd className="mt-0.5 text-xs text-muted-foreground">margem bruta {formatarMoeda(mes.margemBruta)}</dd>
+        </div>
+        <div>
+          <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span aria-hidden="true" className="size-2.5 rounded-[2px] bg-grafico-despesa" />
+            Despesa
+          </dt>
+          <dd className="mt-1 text-2xl font-semibold">{formatarMoeda(mes.despesaTotal)}</dd>
+          <dd className="mt-0.5 text-xs text-muted-foreground">
+            peças {formatarMoeda(mes.custoDasVendas)} · operacionais {formatarMoeda(mes.despesasOperacionais)}
+            {Number(mes.perdas) > 0 && ` · perdas ${formatarMoeda(mes.perdas)}`}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs text-muted-foreground">Resultado</dt>
+          <dd className={cn("mt-1 flex items-center gap-1.5 text-2xl font-semibold", resultado < 0 ? "text-sinal-texto" : "text-ok-texto")}>
+            <i aria-hidden="true" className={cn("bi text-lg", resultado < 0 ? "bi-arrow-down-right" : "bi-arrow-up-right")} />
+            {formatarMoeda(resultado)}
+          </dd>
+          <dd className="mt-0.5 text-xs text-muted-foreground">
+            {resultado < 0 ? "Prejuízo no mês" : "Lucro no mês"} · compras {formatarMoeda(mes.compras)}
+          </dd>
+        </div>
+      </dl>
+    </>
   );
 }
 

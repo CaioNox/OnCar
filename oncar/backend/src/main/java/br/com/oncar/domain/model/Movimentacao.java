@@ -44,6 +44,14 @@ public class Movimentacao {
     @Column(name = "custo_unitario", precision = 12, scale = 4)
     private BigDecimal custoUnitario;
 
+    /** Preco de venda praticado na saida; base da receita nos relatorios. */
+    @Column(name = "preco_venda_unitario", precision = 12, scale = 2)
+    private BigDecimal precoVendaUnitario;
+
+    /** Custo medio do produto logo apos o lancamento; valoriza a posicao de estoque historica. */
+    @Column(name = "custo_medio_resultante", precision = 12, scale = 4)
+    private BigDecimal custoMedioResultante;
+
     @Column(name = "saldo_anterior", nullable = false, precision = 12, scale = 3)
     private BigDecimal saldoAnterior;
 
@@ -138,6 +146,22 @@ public class Movimentacao {
 
     public void setCustoUnitario(BigDecimal custoUnitario) {
         this.custoUnitario = custoUnitario;
+    }
+
+    public BigDecimal getPrecoVendaUnitario() {
+        return precoVendaUnitario;
+    }
+
+    public void setPrecoVendaUnitario(BigDecimal precoVendaUnitario) {
+        this.precoVendaUnitario = precoVendaUnitario;
+    }
+
+    public BigDecimal getCustoMedioResultante() {
+        return custoMedioResultante;
+    }
+
+    public void setCustoMedioResultante(BigDecimal custoMedioResultante) {
+        this.custoMedioResultante = custoMedioResultante;
     }
 
     public BigDecimal getSaldoAnterior() {

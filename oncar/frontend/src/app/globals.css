@@ -84,6 +84,8 @@
   --color-atencao-texto: var(--atencao-texto);
   --color-sinal: var(--sinal);
   --color-sinal-texto: var(--sinal-texto);
+  --color-grafico-receita: var(--grafico-receita);
+  --color-grafico-despesa: var(--grafico-despesa);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -139,6 +141,11 @@
   --sinal: #a3263a;
   --sinal-texto: #a3263a;
 
+  /* Series dos graficos: musgo e azul com croma suficiente para separar sob daltonismo
+     (par validado contra a superficie do cartao em cada tema) */
+  --grafico-receita: #5f7f2a;
+  --grafico-despesa: #2f62a8;
+
   /* Wallpaper: linhas, grade da planta tecnica e veu do modo foco */
   --wallpaper-base: #efeae0;
   --wallpaper-grade: rgb(79 95 58 / 0.22);
@@ -191,6 +198,9 @@
   --atencao-texto: #d9a441;
   --sinal: #a3263a;
   --sinal-texto: #e27a8a;
+
+  --grafico-receita: #7a9d45;
+  --grafico-despesa: #5b8fd6;
 
   --wallpaper-base: #131c2e;
   --wallpaper-grade: rgb(107 125 78 / 0.32);
@@ -405,5 +415,12 @@
 
   .tabela :is(th, td).direita {
     text-align: right;
+  }
+
+  /* Linha de totais: mesmo respiro do corpo, separada por um fio */
+  .tabela tfoot td {
+    padding: 0.625rem 0.875rem;
+    border-top: 1px solid var(--border);
+    background: color-mix(in oklab, var(--card) 94%, var(--foreground));
   }
 }

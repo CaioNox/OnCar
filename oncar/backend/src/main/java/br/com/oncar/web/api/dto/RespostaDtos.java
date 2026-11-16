@@ -1,11 +1,13 @@
 package br.com.oncar.web.api.dto;
 
+import br.com.oncar.domain.model.Despesa;
 import br.com.oncar.domain.model.LogAuditoria;
 import br.com.oncar.domain.model.Cliente;
 import br.com.oncar.domain.model.Fornecedor;
 import br.com.oncar.domain.model.Movimentacao;
 import br.com.oncar.domain.model.Produto;
 import br.com.oncar.domain.model.Usuario;
+import br.com.oncar.service.relatorio.Relatorios;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -75,8 +77,36 @@ public final class RespostaDtos {
         }
     }
 
+    /** `financeiro` fica nulo para quem nao pode ver receita e despesa. */
     public record Painel(int produtosAtivos, int itensAbaixoDoMinimo, BigDecimal valorTotalEmEstoque,
-                         List<ProdutoResumo> listaDeReposicao, List<MovimentacaoResumo> ultimasMovimentacoes) {
+                         List<ProdutoResumo> listaDeReposicao, List<MovimentacaoResumo> ultimasMovimentacoes,
+                         Relatorios.IndicadoresFinanceiros financeiro, List<Relatorios.ProdutoGiro> maiorGiro) {
+    }
+
+    public record DespesaResumo(Long id, String descricao, String categoria, String categoriaDescricao,
+                                BigDecimal valor, LocalDate competencia, Long fornecedorId, String fornecedor,
+                                String documento, String observacao, String usuario, LocalDateTime lancadaEm) {
+
+        public static DespesaResumo de(Despesa despesa) {
+            return new DespesaResumo(
+                    despesa.getId(),
+                    despesa.getDescricao(),
+                    despesa.getCategoria().name(),
+                    despesa.getCategoria().getDescricao(),
+                    despesa.getValor(),
+                    despesa.getCompetencia(),
+                    despesa.getFornecedor() == null ? null : despesa.getFornecedor().getId(),
+                    despesa.getFornecedor() == null ? null : despesa.getFornecedor().getRazaoSocial(),
+                    despesa.getDocumento(),
+                    despesa.getObservacao(),
+                    despesa.getUsuario().getNome(),
+                    despesa.getLancadaEm());
+        }
+    }
+
+    /** Opcoes dos filtros dos relatorios. */
+    public record FiltrosDeRelatorio(List<Opcao> categoriasDeProduto, List<Opcao> categoriasDeDespesa,
+                                     List<FornecedorResumo> fornecedores, List<Opcao> usuarios) {
     }
 
     public record FornecedorResumo(Long id, String razaoSocial, String cnpj, boolean ativo) {

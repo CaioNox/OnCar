@@ -27,6 +27,12 @@
                         <a class="nav-link" th:href="@{/fornecedores}">Fornecedores</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('PROPRIETARIO')">
+                        <a class="nav-link" th:href="@{/despesas}">Despesas</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyRole('PROPRIETARIO','GERENTE_ESTOQUE')">
+                        <a class="nav-link" th:href="@{/relatorios}">Relatorios</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('PROPRIETARIO')">
                         <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('PROPRIETARIO')">

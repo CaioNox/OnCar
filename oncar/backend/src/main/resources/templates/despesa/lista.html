@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Despesas</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h1 class="h4 mb-0">Despesas operacionais</h1>
+            <p class="text-muted small mb-0" th:text="${periodo.descricao()}">Outubro/2026</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/despesas/nova}">Lancar despesa</a>
+    </div>
+
+    <form class="card card-body mb-4" method="get" th:action="@{/despesas}">
+        <div class="row g-3 align-items-end">
+            <div class="col-sm-4 col-md-3">
+                <label class="form-label" for="inicio">De (mes de competencia)</label>
+                <input class="form-control" type="month" id="inicio" name="inicio"
+                       th:value="${periodo.inicio()}">
+            </div>
+            <div class="col-sm-4 col-md-3">
+                <label class="form-label" for="fim">Ate</label>
+                <input class="form-control" type="month" id="fim" name="fim" th:value="${periodo.fim()}">
+            </div>
+            <div class="col-sm-4 col-md-3">
+                <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Total no periodo</p>
+                    <p class="h3 mb-0"
+                       th:text="'R$ ' + ${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</p>
+                    <p class="text-muted small mb-0" th:text="${#lists.size(despesas)} + ' lancamento(s)'"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header">Por categoria</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="item : ${totaisPorCategoria}">
+                        <div class="d-flex justify-content-between small">
+                            <span th:text="${item.descricao()}">Aluguel</span>
+                            <span>
+                                <span th:text="'R$ ' + ${#numbers.formatDecimal(item.valor(), 1, 'POINT', 2, 'COMMA')}"></span>
+                                <span class="text-muted" th:text="'(' + ${item.percentual()} + '%)'"></span>
+                            </span>
+                        </div>
+                        <div class="progress mt-1" style="height: 6px" role="progressbar"
+                             th:aria-label="${item.descricao()}" th:aria-valuenow="${item.percentual()}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-secondary" th:style="'width: ' + ${item.percentual()} + '%'"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item text-muted small" th:if="${#lists.isEmpty(totaisPorCategoria)}">
+                        Nenhuma despesa no periodo.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Competencia</th>
+                <th>Descricao</th>
+                <th>Categoria</th>
+                <th>Fornecedor</th>
+                <th>Documento</th>
+                <th class="text-end">Valor</th>
+                <th>Lancada por</th>
+                <th>Acoes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="despesa : ${despesas}">
+                <td th:text="${#temporals.format(despesa.competencia, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <span th:text="${despesa.descricao}"></span>
+                    <div class="text-muted small" th:if="${despesa.observacao}" th:text="${despesa.observacao}"></div>
+                </td>
+                <td th:text="${despesa.categoria.descricao}"></td>
+                <td th:text="${despesa.fornecedor?.razaoSocial}"></td>
+                <td th:text="${despesa.documento}"></td>
+                <td class="text-end text-nowrap"
+                    th:text="'R$ ' + ${#numbers.formatDecimal(despesa.valor, 1, 'POINT', 2, 'COMMA')}"></td>
+                <td th:text="${despesa.usuario.nome}"></td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary"
+                       th:href="@{/despesas/{id}/editar(id=${despesa.id})}">Editar</a>
+                    <form class="d-inline" method="post"
+                          th:action="@{/despesas/{id}/excluir(id=${despesa.id})}"
+                          onsubmit="return confirm('Excluir esta despesa? A exclusao fica registrada na auditoria.');">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(despesas)}">
+                <td colspan="8" class="text-center text-muted">Nenhuma despesa lancada neste periodo.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

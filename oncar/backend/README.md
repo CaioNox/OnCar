@@ -4,9 +4,10 @@ Sistema de gestao de estoque e controle financeiro para oficinas mecanicas de pe
 e medio porte, implementado a partir do documento *OnCar - Documentacao da Aplicacao Web,
 versao 2.0* (09/09/2026).
 
-Esta entrega cobre o **nucleo do controle de estoque**: autenticacao e perfis, cadastros
-de apoio, movimentacoes com saldo automatico, extrato, alerta de estoque minimo e auditoria.
-As demais funcionalidades previstas na documentacao estao listadas em *Proximas etapas*.
+Esta entrega cobre o **controle de estoque** (autenticacao e perfis, cadastros de apoio,
+movimentacoes com saldo automatico, extrato, alerta de estoque minimo e auditoria) e a
+**gestao financeira** (despesas operacionais, relatorios mensais e painel gerencial).
+As demais funcionalidades previstas na documentacao estao listadas no *Roadmap*.
 
 ## Tecnologias
 
@@ -37,7 +38,8 @@ A organizacao segue o padrao MVC com separacao entre apresentacao (`web`), servi
 > (17 ou mais recente; testado ate o 26).
 
 A aplicacao sobe em <http://localhost:8080> com o perfil `dev`, que cria um usuario de
-cada perfil e alguns produtos. Todos os usuarios de demonstracao usam a senha `oncar2026`:
+cada perfil, alguns produtos e seis meses de vendas e despesas, para o painel e os relatorios
+terem o que mostrar. Todos os usuarios de demonstracao usam a senha `oncar2026`:
 
 | E-mail | Perfil |
 | --- | --- |
@@ -51,9 +53,18 @@ usuario `sa`, sem senha).
 
 ### Producao (PostgreSQL)
 
+Com Docker, nesta pasta (PostgreSQL + API com as telas Thymeleaf):
+
 ```bash
+cp .env.example .env   # senha do banco e o primeiro proprietario
 docker compose up --build
 ```
+
+Para subir tambem o front-end Next.js, use o `docker-compose.yml` da pasta `oncar/`.
+
+O perfil `prod` comeca sem usuarios e sem dados de demonstracao. Enquanto a base nao tiver
+nenhum usuario, a aplicacao cria um proprietario com `ONCAR_ADMIN_EMAIL` e `ONCAR_ADMIN_SENHA`
+(senha com 8 caracteres ou mais, letra e numero); depois disso as duas variaveis sao ignoradas.
 
 Ou, com um PostgreSQL proprio:
 
@@ -61,6 +72,8 @@ Ou, com um PostgreSQL proprio:
 export ONCAR_DB_URL=jdbc:postgresql://localhost:5432/oncar
 export ONCAR_DB_USER=oncar
 export ONCAR_DB_PASSWORD=suasenha
+export ONCAR_ADMIN_EMAIL=proprietario@suaoficina.com.br
+export ONCAR_ADMIN_SENHA=troque123
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
@@ -86,6 +99,9 @@ export ONCAR_DB_PASSWORD=suasenha
 | Alerta de estoque minimo | `ProdutoRepository.findAbaixoDoMinimo`, tela inicial e `/produtos/reposicao` |
 | Kardex por produto | `EstoqueService.listarExtrato`, tela `produto/extrato` |
 | Auditoria | `AuditoriaService`, tela `/auditoria` |
+| Despesas operacionais | `DespesaService`, `DespesaController` (`/despesas`), `DespesaApiController` |
+| Relatorios mensais (entradas, saidas, gastos e resultado, posicao de estoque) | `RelatorioService`, `RelatorioController` (`/relatorios`), `RelatorioApiController` |
+| Painel gerencial (receita x despesa, maior giro) | `RelatorioService.indicadoresFinanceiros` e `maiorGiro`, tela inicial e `/api/painel` |
 
 ## Regras de negocio
 
@@ -103,6 +119,8 @@ export ONCAR_DB_PASSWORD=suasenha
 | Preco de venda abaixo do custo exige confirmacao | `ProdutoService.validarMargem` |
 | Politica de senhas e bloqueio de conta | `UsuarioService`, `SecurityConfig` |
 | Sessao expira apos 30 minutos | `application.properties`, `SecurityConfig` |
+| Relatorios e painel apurados pelo mes de competencia | `RelatorioService`, `Relatorios.Periodo` |
+| Despesas, gastos e resultado so para o proprietario; gerente emite os relatorios operacionais | `SecurityConfig`, `PermissoesApi.podeVerFinanceiro` |
 
 ## Stack
 
@@ -117,8 +135,19 @@ em desenvolvimento, Docker e testes com JUnit.
   Proprietario na tela de usuarios; a troca da propria senha fica em *Alterar senha*.
 - **Custo medio no estorno.** Ao estornar uma entrada, o custo medio volta ao valor anterior a
   compra. Quando o saldo remanescente e zero, o custo e mantido por nao ser apuravel.
+- **Apuracao do resultado.** Receita = vendas de balcao e pecas aplicadas em OS, pelo preco de
+  venda gravado em cada saida. Despesa = custo medio das pecas vendidas + perdas e avarias +
+  despesas operacionais. Compras de mercadoria viram estoque e aparecem a parte, sem reduzir o
+  resultado. Lancamentos estornados e os seus estornos ficam fora dos relatorios.
+- **Preco e custo historicos.** Cada movimentacao grava o preco de venda praticado e o custo medio
+  resultante, para que mudancas posteriores no cadastro nao reescrevam meses ja apurados.
+  Lancamentos gravados antes dessas colunas usam o preco e o custo atuais.
+- **Posicao de estoque.** Por ser fisica, segue a data de cada lancamento (saldo inicial +
+  entradas - saidas + ajustes e estornos = saldo final); os demais relatorios seguem a competencia.
+- **Despesas.** A competencia nao pode ser de um mes futuro. Fornecedores e usuarios com despesas
+  vinculadas so podem ser inativados.
 
 ## Roadmap
 
-Ordens de servico, despesas, relatorios mensais, painel gerencial com graficos, exportacao em PDF
-e Excel e assistente com IA.
+Ordens de servico, exportacao dos relatorios em PDF e Excel, bloqueio de lancamentos retroativos
+em meses ja encerrados e assistente com IA.

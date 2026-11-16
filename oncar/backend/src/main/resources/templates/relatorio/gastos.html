@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Gastos e resultado</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container mb-5" th:with="total=${relatorio.consolidado()}">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+    <div th:replace="~{relatorio/fragmentos :: abas}"></div>
+    <form th:replace="~{relatorio/fragmentos :: filtros}"></form>
+
+    <h2 class="h5">Resultado da oficina</h2>
+    <p class="text-muted small">
+        Apuracao pelo mes de competencia, sem os filtros acima. A despesa soma o custo medio das pecas
+        vendidas, as perdas e as despesas operacionais; compras de mercadoria viram estoque e nao reduzem
+        o resultado.
+    </p>
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Receita</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(total.receita())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Despesa</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(total.despesaTotal())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Resultado</p>
+                    <p class="h4 mb-0" th:classappend="${total.resultado().signum() < 0} ? 'text-danger' : 'text-success'"
+                       th:text="${@formatos.moeda(total.resultado())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Compras de mercadoria</p>
+                    <p class="h4 mb-0" th:text="${@formatos.moeda(total.compras())}">R$ 0,00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered table-sm bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Mes</th>
+                <th class="text-end">Receita</th>
+                <th class="text-end">Custo das vendas</th>
+                <th class="text-end">Margem bruta</th>
+                <th class="text-end">Perdas</th>
+                <th class="text-end">Despesas operacionais</th>
+                <th class="text-end">Resultado</th>
+                <th class="text-end">Compras</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="mes : ${relatorio.meses()}">
+                <td th:text="${mes.nomeDoMes()}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.receita())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.custoDasVendas())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.margemBruta())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.perdas())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.despesasOperacionais())}"></td>
+                <td class="text-end text-nowrap fw-semibold"
+                    th:classappend="${mes.resultado().signum() < 0} ? 'text-danger'"
+                    th:text="${@formatos.moeda(mes.resultado())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(mes.compras())}"></td>
+            </tr>
+            </tbody>
+            <tfoot th:if="${#lists.size(relatorio.meses()) > 1}">
+            <tr class="fw-semibold">
+                <td th:text="${total.nomeDoMes()}">Total</td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.receita())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.custoDasVendas())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.margemBruta())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.perdas())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.despesasOperacionais())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.resultado())}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(total.compras())}"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <h2 class="h5">Gastos do periodo</h2>
+    <p class="text-muted small">
+        Com os filtros aplicados. Ao filtrar por categoria de despesa, as compras de mercadoria ficam de fora.
+    </p>
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-light h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1 small">Total gasto</p>
+                    <p class="h3 mb-1" th:text="${@formatos.moeda(relatorio.totalGasto())}">R$ 0,00</p>
+                    <p class="small mb-0 text-muted">
+                        Despesas <span th:text="${@formatos.moeda(relatorio.totalDespesas())}"></span><br>
+                        Compras <span th:text="${@formatos.moeda(relatorio.totalCompras())}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">Despesas por categoria</div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between"
+                        th:each="grupo : ${relatorio.despesasPorCategoria()}">
+                        <span th:text="${grupo.grupo()}"></span>
+                        <span th:text="${@formatos.moeda(grupo.valor())}"></span>
+                    </li>
+                    <li class="list-group-item text-muted" th:if="${#lists.isEmpty(relatorio.despesasPorCategoria())}">-</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">Compras por fornecedor</div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between"
+                        th:each="grupo : ${relatorio.comprasPorFornecedor()}">
+                        <span th:text="${grupo.grupo()}"></span>
+                        <span th:text="${@formatos.moeda(grupo.valor())}"></span>
+                    </li>
+                    <li class="list-group-item text-muted" th:if="${#lists.isEmpty(relatorio.comprasPorFornecedor())}">-</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm bg-white align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Competencia</th>
+                <th>Despesa</th>
+                <th>Categoria</th>
+                <th>Fornecedor</th>
+                <th>Documento</th>
+                <th class="text-end">Valor</th>
+                <th>Lancada por</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="linha : ${relatorio.despesas()}">
+                <td class="text-nowrap" th:text="${#temporals.format(linha.competencia(), 'dd/MM/yyyy')}"></td>
+                <td th:text="${linha.descricao()}"></td>
+                <td th:text="${linha.categoria()}"></td>
+                <td th:text="${linha.fornecedor()}"></td>
+                <td th:text="${linha.documento()}"></td>
+                <td class="text-end text-nowrap" th:text="${@formatos.moeda(linha.valor())}"></td>
+                <td th:text="${linha.usuario()}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(relatorio.despesas())}">
+                <td colspan="7" class="text-center text-muted">Nenhuma despesa no periodo com estes filtros.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

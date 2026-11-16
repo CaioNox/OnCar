@@ -81,6 +81,11 @@ export const api = {
     });
   },
 
+  async put<T>(caminho: string, corpo: unknown): Promise<T> {
+    await prepararCsrf();
+    return requisitar<T>(caminho, { method: "PUT", body: JSON.stringify(corpo) });
+  },
+
   async delete<T>(caminho: string): Promise<T> {
     await prepararCsrf();
     return requisitar<T>(caminho, { method: "DELETE" });
@@ -115,4 +120,26 @@ export function formatarDataHora(valor: string): string {
     dateStyle: "short",
     timeStyle: "short",
   });
+}
+
+/** Mes AAAA-MM por extenso: "2026-10" vira "Outubro de 2026" (ou "out/26" no curto). */
+export function formatarMes(mes: string, estilo: "long" | "short" = "long"): string {
+  const [ano, numero] = mes.split("-").map(Number);
+  const data = new Date(ano, numero - 1, 1);
+  if (estilo === "short") {
+    return data.toLocaleDateString("pt-BR", { month: "short" }).replace(".", "") + "/" + String(ano).slice(2);
+  }
+  const extenso = data.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  return extenso.charAt(0).toUpperCase() + extenso.slice(1);
+}
+
+/** Data AAAA-MM-DD da API sem passar por fuso: "2026-10-05" vira "05/10/2026". */
+export function formatarData(data: string): string {
+  const [ano, mes, dia] = data.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
+/** Mes corrente no formato AAAA-MM, pelo relogio local. */
+export function mesAtual(agora: Date = new Date()): string {
+  return `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, "0")}`;
 }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnCar - Despesa</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/oncar.css}">
+</head>
+<body>
+<div th:replace="~{layout/base :: cabecalho}"></div>
+
+<div class="container">
+    <div th:replace="~{layout/base :: mensagens}"></div>
+
+    <h1 class="h4 mb-3" th:text="${despesaForm.id} == null ? 'Lancar despesa' : 'Editar despesa'">Lancar despesa</h1>
+
+    <form class="card card-body" method="post" th:action="@{/despesas/salvar}" th:object="${despesaForm}">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label" for="descricao">Descricao</label>
+                <input class="form-control" id="descricao" th:field="*{descricao}"
+                       placeholder="Ex.: Conta de energia de outubro">
+                <div class="text-danger small" th:if="${#fields.hasErrors('descricao')}"
+                     th:errors="*{descricao}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="categoria">Categoria</label>
+                <select class="form-select" id="categoria" th:field="*{categoria}">
+                    <option value="">Selecione</option>
+                    <option th:each="categoria : ${categorias}" th:value="${categoria}"
+                            th:text="${categoria.descricao}"></option>
+                </select>
+                <div class="text-danger small" th:if="${#fields.hasErrors('categoria')}"
+                     th:errors="*{categoria}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="valor">Valor (R$)</label>
+                <input class="form-control" type="number" step="0.01" min="0.01" id="valor" th:field="*{valor}">
+                <div class="text-danger small" th:if="${#fields.hasErrors('valor')}" th:errors="*{valor}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="competencia">Data de competencia</label>
+                <input class="form-control" type="date" id="competencia" th:field="*{competencia}">
+                <div class="form-text">Mes ao qual o gasto pertence, mesmo que pago depois.</div>
+                <div class="text-danger small" th:if="${#fields.hasErrors('competencia')}"
+                     th:errors="*{competencia}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="fornecedorId">Fornecedor (opcional)</label>
+                <select class="form-select" id="fornecedorId" th:field="*{fornecedorId}">
+                    <option value="">Nenhum</option>
+                    <option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}"
+                            th:text="${fornecedor.razaoSocial} + (${fornecedor.ativo} ? '' : ' (inativo)')"></option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="documento">Documento (opcional)</label>
+                <input class="form-control" id="documento" th:field="*{documento}" placeholder="Ex.: Fatura 2026/10">
+                <div class="text-danger small" th:if="${#fields.hasErrors('documento')}"
+                     th:errors="*{documento}"></div>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label" for="observacao">Observacao (opcional)</label>
+                <textarea class="form-control" id="observacao" rows="2" th:field="*{observacao}"></textarea>
+                <div class="text-danger small" th:if="${#fields.hasErrors('observacao')}"
+                     th:errors="*{observacao}"></div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button class="btn btn-success" type="submit">Salvar</button>
+            <a class="btn btn-outline-secondary" th:href="@{/despesas}">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

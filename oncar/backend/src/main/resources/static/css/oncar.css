@@ -9,3 +9,148 @@ body {
 .table td, .table th {
     vertical-align: middle;
 }
+
+/* Graficos do painel: receita em azul e despesa em laranja (par validado para daltonismo) */
+:root {
+    --grafico-receita: #2a78d6;
+    --grafico-despesa: #eb6834;
+    --grafico-grade: #e3e5e8;
+    --grafico-superficie: #ffffff;
+}
+
+.legenda-cor {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: baseline;
+}
+
+.legenda-cor.receita {
+    background: var(--grafico-receita);
+}
+
+.legenda-cor.despesa {
+    background: var(--grafico-despesa);
+}
+
+.grafico-colunas {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    padding-bottom: 24px;
+}
+
+.grafico-eixo {
+    position: relative;
+    width: 56px;
+    height: 200px;
+}
+
+.grafico-eixo span {
+    position: absolute;
+    right: 0;
+    transform: translateY(50%);
+    font-size: .75rem;
+    color: #6c757d;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.grafico-area {
+    position: relative;
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 8px;
+}
+
+.grafico-grade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--grafico-grade);
+}
+
+.grafico-grupo {
+    position: relative;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.grafico-barras {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.grafico-barra {
+    position: relative;
+    display: block;
+    width: 20px;
+    min-height: 1px;
+    border-radius: 4px 4px 0 0;
+    outline-offset: 2px;
+}
+
+.grafico-barra.receita {
+    background: var(--grafico-receita);
+}
+
+.grafico-barra.despesa {
+    background: var(--grafico-despesa);
+}
+
+.grafico-barra:hover,
+.grafico-barra:focus-visible {
+    filter: brightness(1.12);
+}
+
+/* dica com o valor ao passar o mouse ou focar pelo teclado */
+.grafico-barra:hover::after,
+.grafico-barra:focus-visible::after {
+    content: attr(data-dica);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #212529;
+    color: #fff;
+    font-size: .75rem;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.grafico-mes {
+    position: absolute;
+    bottom: -22px;
+    font-size: .75rem;
+    color: #6c757d;
+}
+
+.grafico-giro li + li {
+    margin-top: .75rem;
+}
+
+.grafico-giro-linha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grafico-giro-barra {
+    display: block;
+    height: 12px;
+    border-radius: 0 4px 4px 0;
+    background: var(--grafico-receita);
+    max-width: 70%;
+}
+

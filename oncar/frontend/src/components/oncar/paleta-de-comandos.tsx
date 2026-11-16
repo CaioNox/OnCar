@@ -8,7 +8,13 @@ import { Dialogo } from "@/components/oncar/dialogo";
 import { alternarTema } from "@/components/oncar/seletor-de-tema";
 import { api, formatarNumero } from "@/lib/api";
 import { normalizar, produtoCasa } from "@/lib/assistente";
-import { podeGerenciarEstoque, podeRegistrarSaida, type Cliente } from "@/lib/tipos";
+import {
+  podeEmitirRelatorios,
+  podeGerenciarEstoque,
+  podeRegistrarSaida,
+  podeVerFinanceiro,
+  type Cliente,
+} from "@/lib/tipos";
 
 type Comando = Action & { executar: () => void };
 
@@ -79,6 +85,12 @@ function ConteudoDaPaleta({ aoFechar }: { aoFechar: () => void }) {
         : []),
       ...(gerencia
         ? [{ id: "novo-ajuste", label: "Ajuste de inventário", description: "Depois da contagem", icon: icone("bi-sliders"), executar: ir("/movimentacoes?aba=ajuste") }]
+        : []),
+      ...(podeVerFinanceiro(usuario)
+        ? [{ id: "nova-despesa", label: "Lançar despesa", description: "Aluguel, energia, ferramentas…", icon: icone("bi-receipt"), executar: ir("/despesas?nova=1") }]
+        : []),
+      ...(podeEmitirRelatorios(usuario)
+        ? [{ id: "ir-relatorios", label: "Relatórios do mês", description: "Entradas, saídas e posição de estoque", icon: icone("bi-bar-chart-line"), executar: ir("/relatorios") }]
         : []),
       {
         id: "assistente",
