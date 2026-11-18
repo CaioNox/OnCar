@@ -6,6 +6,7 @@ import br.com.oncar.service.AuditoriaService;
 import br.com.oncar.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,8 +35,10 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.session.SessionInformationExpiredEvent;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -46,7 +50,8 @@ public class SecurityConfig {
     private static final String PROPRIETARIO = Perfil.PROPRIETARIO.name();
     private static final String GERENTE = Perfil.GERENTE_ESTOQUE.name();
     private static final String ATENDENTE = Perfil.ATENDENTE.name();
-    private static final AntPathRequestMatcher REQUISICOES_DA_API = new AntPathRequestMatcher("/api/**");
+    private static final RequestMatcher REQUISICOES_DA_API =
+            PathPatternRequestMatcher.withDefaults().matcher("/api/**");
 
     @Value("${oncar.frontend.origens:http://localhost:3000}")
     private List<String> origensDoFrontend;
@@ -67,7 +72,8 @@ public class SecurityConfig {
                                            AuthenticationSuccessHandler successHandler,
                                            AuthenticationFailureHandler failureHandler,
                                            AccessDeniedHandler accessDeniedHandler,
-                                           CorsConfigurationSource corsConfigurationSource) throws Exception {
+                                           CorsConfigurationSource corsConfigurationSource,
+                                           SessionRegistry sessionRegistry) throws Exception {
         // O token do CSRF vai em cookie legivel pelo navegador para que o front-end
         // possa devolve-lo no cabecalho X-XSRF-TOKEN; os formularios Thymeleaf
         // continuam recebendo o campo oculto normalmente.
@@ -80,7 +86,7 @@ public class SecurityConfig {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(tratadorDeCsrf))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/webjars/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/login", "/css/**", "/js/**", "/webjars/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/sessao").permitAll()
                         // as mesmas regras de perfil valem para as telas e para a API
                         .requestMatchers("/usuarios/**", "/auditoria/**", "/api/auditoria").hasRole(PROPRIETARIO)
@@ -114,17 +120,61 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .permitAll())
-                // sessao expirada devolve o usuario ao login com o motivo do encerramento
+                // Toda sessao autenticada entra no registro (sem limite por usuario), para
+                // poder ser encerrada quando o acesso do usuario muda. Ver SessoesAtivasService.
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/login?expirada"))
+                        .sessionConcurrency(concorrencia -> concorrencia
+                                .maximumSessions(-1)
+                                .sessionRegistry(sessionRegistry)
+                                .expiredSessionStrategy(this::sessaoEncerrada)))
                 .exceptionHandling(handling -> handling
                         // A API responde 401; as telas continuam sendo levadas ao formulario de login
                         .defaultAuthenticationEntryPointFor(
                                 new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED), REQUISICOES_DA_API)
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"), AnyRequestMatcher.INSTANCE)
+                                new LoginComMotivoEntryPoint(), AnyRequestMatcher.INSTANCE)
                         .accessDeniedHandler(accessDeniedHandler));
         return http.build();
+    }
+
+    /**
+     * Sessao derrubada porque o usuario foi inativado, mudou de perfil ou teve a senha
+     * trocada. O ConcurrentSessionFilter ja invalidou a sessao e limpou o contexto.
+     */
+    private void sessaoEncerrada(SessionInformationExpiredEvent evento) throws IOException {
+        HttpServletRequest request = evento.getRequest();
+        HttpServletResponse response = evento.getResponse();
+        if (REQUISICOES_DA_API.matches(request)) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"mensagem\":\"Sua sessao foi encerrada porque o seu acesso foi "
+                    + "alterado. Entre novamente para continuar.\",\"detalhes\":[]}");
+            return;
+        }
+        response.sendRedirect(request.getContextPath() + "/login?encerrada");
+    }
+
+    /**
+     * Leva as telas ao login e, quando o navegador ainda envia o cookie de uma sessao que
+     * venceu por inatividade, avisa o motivo com /login?expirada.
+     *
+     * Substitui o antigo invalidSessionUrl, que redirecionava qualquer requisicao com
+     * cookie vencido - inclusive as da API, que devem receber 401 em JSON, e o proprio
+     * POST /api/sessao, impedindo o novo login.
+     */
+    private static final class LoginComMotivoEntryPoint extends LoginUrlAuthenticationEntryPoint {
+
+        LoginComMotivoEntryPoint() {
+            super("/login");
+        }
+
+        @Override
+        protected String determineUrlToUseForThisRequest(HttpServletRequest request, HttpServletResponse response,
+                                                         AuthenticationException exception) {
+            boolean sessaoVencida = request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid();
+            return sessaoVencida ? "/login?expirada" : "/login";
+        }
     }
 
     @Bean

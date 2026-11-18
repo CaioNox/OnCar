@@ -30,19 +30,22 @@ public class UsuarioService {
     private final DespesaRepository despesaRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuditoriaService auditoriaService;
+    private final SessoesAtivasService sessoesAtivas;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           SenhaHistoricoRepository senhaHistoricoRepository,
                           MovimentacaoRepository movimentacaoRepository,
                           DespesaRepository despesaRepository,
                           PasswordEncoder passwordEncoder,
-                          AuditoriaService auditoriaService) {
+                          AuditoriaService auditoriaService,
+                          SessoesAtivasService sessoesAtivas) {
         this.usuarioRepository = usuarioRepository;
         this.senhaHistoricoRepository = senhaHistoricoRepository;
         this.movimentacaoRepository = movimentacaoRepository;
         this.despesaRepository = despesaRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditoriaService = auditoriaService;
+        this.sessoesAtivas = sessoesAtivas;
     }
 
     @Transactional(readOnly = true)
@@ -87,12 +90,20 @@ public class UsuarioService {
                     throw new RegraNegocioException(
                             "O e-mail " + dados.getEmail() + " ja pertence a outro usuario.");
                 });
+        // a sessao guarda o e-mail e o perfil do momento do login: se um dos dois mudar,
+        // o usuario precisa entrar de novo para valer o acesso novo
+        String emailAnterior = usuario.getEmail();
+        boolean acessoMudou = !emailAnterior.equalsIgnoreCase(dados.getEmail())
+                || usuario.getPerfil() != dados.getPerfil();
         usuario.setNome(dados.getNome());
         usuario.setEmail(dados.getEmail());
         usuario.setPerfil(dados.getPerfil());
         Usuario salvo = usuarioRepository.save(usuario);
         auditoriaService.registrar(AcaoAuditoria.ALTERACAO, "Usuario", salvo.getId(),
                 "Dados do usuario " + salvo.getEmail() + " alterados");
+        if (acessoMudou) {
+            sessoesAtivas.encerrarSessoesDe(emailAnterior);
+        }
         return salvo;
     }
 
@@ -103,6 +114,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         auditoriaService.registrar(AcaoAuditoria.INATIVACAO, "Usuario", id,
                 "Usuario " + usuario.getEmail() + " inativado");
+        sessoesAtivas.encerrarSessoesDe(usuario.getEmail());
     }
 
     @Transactional
@@ -127,6 +139,7 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
         auditoriaService.registrar(AcaoAuditoria.EXCLUSAO, "Usuario", id,
                 "Usuario " + usuario.getEmail() + " excluido");
+        sessoesAtivas.encerrarSessoesDe(usuario.getEmail());
     }
 
     @Transactional
@@ -159,6 +172,8 @@ public class UsuarioService {
         senhaHistoricoRepository.save(new SenhaHistorico(usuario, usuario.getSenha()));
         auditoriaService.registrar(AcaoAuditoria.ALTERACAO, "Usuario", id,
                 "Senha do usuario " + usuario.getEmail() + " redefinida");
+        // quem estiver com a senha antiga (inclusive quem a descobriu) perde o acesso ja
+        sessoesAtivas.encerrarSessoesDe(usuario.getEmail());
     }
 
     @Transactional

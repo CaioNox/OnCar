@@ -1,5 +1,6 @@
 package br.com.oncar.web.api;
 
+import br.com.oncar.service.SessoesAtivasService;
 import br.com.oncar.service.UsuarioService;
 import br.com.oncar.web.api.dto.RequisicaoDtos;
 import br.com.oncar.web.api.dto.RespostaDtos;
@@ -31,11 +32,14 @@ public class SessaoApiController {
 
     private final AuthenticationManager authenticationManager;
     private final UsuarioService usuarioService;
+    private final SessoesAtivasService sessoesAtivas;
     private final SecurityContextRepository contextRepository = new HttpSessionSecurityContextRepository();
 
-    public SessaoApiController(AuthenticationManager authenticationManager, UsuarioService usuarioService) {
+    public SessaoApiController(AuthenticationManager authenticationManager, UsuarioService usuarioService,
+                               SessoesAtivasService sessoesAtivas) {
         this.authenticationManager = authenticationManager;
         this.usuarioService = usuarioService;
+        this.sessoesAtivas = sessoesAtivas;
     }
 
     @PostMapping
@@ -48,8 +52,20 @@ public class SessaoApiController {
             SecurityContext contexto = SecurityContextHolder.createEmptyContext();
             contexto.setAuthentication(autenticacao);
             SecurityContextHolder.setContext(contexto);
-            request.getSession(true);
+            // Protecao contra fixacao de sessao: o formLogin troca o ID sozinho, mas este
+            // login manual nao. Sem isto, um JSESSIONID plantado no navegador da vitima
+            // antes do login continuaria valido depois dele, ja autenticado. Descartar a
+            // sessao anterior (em vez de so trocar o ID) tambem evita herdar atributos de
+            // outro usuario que tenha entrado no mesmo navegador sem sair.
+            HttpSession anterior = request.getSession(false);
+            if (anterior != null) {
+                anterior.invalidate();
+            }
+            HttpSession sessao = request.getSession(true);
             contextRepository.saveContext(contexto, request, response);
+            // este login nao passa pelo formLogin: registra a sessao para que ela possa ser
+            // encerrada quando o acesso do usuario mudar (ver SessoesAtivasService)
+            sessoesAtivas.registrar(sessao.getId(), autenticacao.getPrincipal());
 
             usuarioService.registrarLoginComSucesso(autenticacao.getName());
             return ResponseEntity.ok(RespostaDtos.UsuarioSessao.de(

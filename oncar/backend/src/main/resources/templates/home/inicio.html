@@ -109,10 +109,14 @@
                             <div class="grafico-barras">
                                 <span class="grafico-barra receita" tabindex="0"
                                       th:style="'height: ' + ${coluna.alturaReceita()} + '%'"
-                                      th:attr="data-dica=${@formatos.moeda(coluna.receita())},aria-label='Receita de ' + ${coluna.mesCompleto()} + ': ' + ${@formatos.moeda(coluna.receita())}"></span>
+                                      th:with="valor=${@formatos.moeda(coluna.receita())}"
+                                      th:data-dica="${valor}"
+                                      th:aria-label="'Receita de ' + ${coluna.mesCompleto()} + ': ' + ${valor}"></span>
                                 <span class="grafico-barra despesa" tabindex="0"
                                       th:style="'height: ' + ${coluna.alturaDespesa()} + '%'"
-                                      th:attr="data-dica=${@formatos.moeda(coluna.despesa())},aria-label='Despesa de ' + ${coluna.mesCompleto()} + ': ' + ${@formatos.moeda(coluna.despesa())}"></span>
+                                      th:with="valor=${@formatos.moeda(coluna.despesa())}"
+                                      th:data-dica="${valor}"
+                                      th:aria-label="'Despesa de ' + ${coluna.mesCompleto()} + ': ' + ${valor}"></span>
                             </div>
                             <span class="grafico-mes" th:classappend="${coluna.atual()} ? 'fw-semibold'"
                                   th:text="${coluna.mes()}">out/26</span>

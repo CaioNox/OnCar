@@ -23,6 +23,9 @@
             <div class="alert alert-warning" th:if="${param.expirada}">
                 Sua sessao expirou por inatividade. Entre novamente para continuar.
             </div>
+            <div class="alert alert-warning" th:if="${param.encerrada}">
+                Sua sessao foi encerrada porque o seu acesso foi alterado. Entre novamente para continuar.
+            </div>
             <div class="alert alert-success" th:if="${param.logout}">
                 Sessao encerrada com seguranca.
             </div>

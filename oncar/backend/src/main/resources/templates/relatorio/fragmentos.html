@@ -20,22 +20,22 @@
     <ul class="nav nav-tabs mb-3">
         <li class="nav-item">
             <a class="nav-link" th:classappend="${relatorioAtivo == 'entradas'} ? 'active'"
-               th:attr="aria-current=${relatorioAtivo == 'entradas'} ? 'page' : null"
+               th:aria-current="${relatorioAtivo == 'entradas'} ? 'page' : null"
                th:href="@{/relatorios/entradas(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Entradas</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" th:classappend="${relatorioAtivo == 'saidas'} ? 'active'"
-               th:attr="aria-current=${relatorioAtivo == 'saidas'} ? 'page' : null"
+               th:aria-current="${relatorioAtivo == 'saidas'} ? 'page' : null"
                th:href="@{/relatorios/saidas(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Saidas</a>
         </li>
         <li class="nav-item" sec:authorize="hasRole('PROPRIETARIO')">
             <a class="nav-link" th:classappend="${relatorioAtivo == 'gastos'} ? 'active'"
-               th:attr="aria-current=${relatorioAtivo == 'gastos'} ? 'page' : null"
+               th:aria-current="${relatorioAtivo == 'gastos'} ? 'page' : null"
                th:href="@{/relatorios/gastos(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Gastos e resultado</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" th:classappend="${relatorioAtivo == 'posicao'} ? 'active'"
-               th:attr="aria-current=${relatorioAtivo == 'posicao'} ? 'page' : null"
+               th:aria-current="${relatorioAtivo == 'posicao'} ? 'page' : null"
                th:href="@{/relatorios/posicao(inicio=${periodo.inicio()},fim=${periodo.fim()})}">Posicao de estoque</a>
         </li>
     </ul>

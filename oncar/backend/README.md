@@ -14,7 +14,7 @@ As demais funcionalidades previstas na documentacao estao listadas no *Roadmap*.
 | Camada | Tecnologia |
 | --- | --- |
 | Linguagem | Java 17 |
-| Back-end | Spring Boot 3.3, Spring MVC, Spring Data JPA/Hibernate |
+| Back-end | Spring Boot 4.1, Spring MVC, Spring Data JPA/Hibernate |
 | Seguranca | Spring Security 6 com hash BCrypt |
 | Apresentacao | Thymeleaf + Bootstrap 5 (responsivo) |
 | Banco (desenvolvimento) | H2 em memoria |
@@ -48,8 +48,18 @@ terem o que mostrar. Todos os usuarios de demonstracao usam a senha `oncar2026`:
 | atendente@oncar.com.br | Atendente |
 | mecanico@oncar.com.br | Mecanico |
 
-O console do H2 fica em <http://localhost:8080/h2-console> (JDBC `jdbc:h2:mem:oncar`,
-usuario `sa`, sem senha).
+O perfil `dev` so atende na propria maquina (`server.address=127.0.0.1`), porque a senha
+de demonstracao e publica. Para abrir de outro aparelho da rede, rode
+`./mvnw spring-boot:run -Dspring-boot.run.arguments=--server.address=0.0.0.0`, sabendo que
+as contas de demonstracao ficam acessiveis a quem estiver na mesma rede.
+
+O console web do H2 fica desligado em todos os perfis: ele executa SQL arbitrario e nao
+funciona com a protecao CSRF ativa.
+
+> **Sem perfil informado, vale `prod`.** So o `./mvnw spring-boot:run` ativa o `dev`
+> (propriedade `spring-boot.run.profiles` do `pom.xml`). Um `java -jar target/oncar-*.jar`
+> sem `SPRING_PROFILES_ACTIVE` sobe como producao e exige as variaveis do PostgreSQL. Na
+> IDE, defina o perfil ativo `dev` na configuracao de execucao do `OnCarApplication`.
 
 ### Producao (PostgreSQL)
 

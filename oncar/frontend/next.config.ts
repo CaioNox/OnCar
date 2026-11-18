@@ -5,7 +5,7 @@ import type { NextConfig } from "next";
 // Spring Boot, de modo que o navegador fale sempre com a mesma origem - assim o
 // cookie de sessao e o token CSRF funcionam sem configuracao extra.
 // Os rewrites sao resolvidos no `next build`: mudar ONCAR_BACKEND_URL exige novo build.
-const backend = process.env.ONCAR_BACKEND_URL ?? "http://localhost:8080";
+const backend = process.env.ONCAR_BACKEND_URL ?? "http://127.0.0.1:8080";
 
 const nextConfig: NextConfig = {
   // Fixa a raiz do Turbopack no front-end, ignorando lockfiles fora do projeto.

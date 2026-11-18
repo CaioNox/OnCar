@@ -4,7 +4,7 @@ Projeto com dois módulos em `oncar/`:
 
 | Módulo | Stack | Porta padrão |
 | --- | --- | --- |
-| `oncar/backend` | Java 17 + Spring Boot 3.3 (Maven) | 8080 |
+| `oncar/backend` | Java 17 + Spring Boot 4.1 (Maven) | 8080 |
 | `oncar/frontend` | Next.js 16 + React 19 (npm) | 3000 |
 
 ## Ferramentas necessárias

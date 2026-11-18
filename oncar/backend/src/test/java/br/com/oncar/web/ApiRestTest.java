@@ -1,5 +1,6 @@
 package br.com.oncar.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,8 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -41,6 +43,43 @@ class ApiRestTest extends TesteIntegracao {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(EMAIL_GERENTE))
                 .andExpect(jsonPath("$.perfil").value("GERENTE_ESTOQUE"));
+    }
+
+    @Test
+    @DisplayName("o login pela API descarta a sessao anterior (protecao contra fixacao de sessao)")
+    void loginPelaApiNaoReaproveitaSessaoAnterior() throws Exception {
+        // sessao "plantada" no navegador da vitima antes do login
+        MockHttpSession sessaoDoAtacante = new MockHttpSession(null, "id-conhecido-pelo-atacante");
+
+        MockHttpSession sessaoAutenticada = (MockHttpSession) mockMvc.perform(post("/api/sessao").with(csrf())
+                        .session(sessaoDoAtacante)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + EMAIL_GERENTE + "\",\"senha\":\"oncar2026\"}"))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession(false);
+
+        assertThat(sessaoAutenticada).isNotNull();
+        assertThat(sessaoAutenticada.getId()).isNotEqualTo("id-conhecido-pelo-atacante");
+        assertThat(sessaoDoAtacante.isInvalid()).isTrue();
+
+        // quem guardou o ID antigo continua anonimo; a sessao nova esta autenticada
+        mockMvc.perform(get("/api/sessao").session(sessaoDoAtacante)).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/sessao").session(sessaoAutenticada))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(EMAIL_GERENTE));
+    }
+
+    @Test
+    @DisplayName("login malsucedido nao derruba a sessao que o navegador ja tinha")
+    void loginMalsucedidoMantemSessao() throws Exception {
+        MockHttpSession sessao = new MockHttpSession();
+
+        mockMvc.perform(post("/api/sessao").with(csrf()).session(sessao)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + EMAIL_GERENTE + "\",\"senha\":\"errada123\"}"))
+                .andExpect(status().isUnauthorized());
+
+        assertThat(sessao.isInvalid()).isFalse();
     }
 
     @Test
